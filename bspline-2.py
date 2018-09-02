@@ -101,7 +101,7 @@ coors.reverse()
 for k in range(1, len(out1[0])):
     coors.append([out1[0][k], out1[1][k]])
 
-f = open("../bspline-xfoil/bsairfoil.txt", "w")
+f = open("../optimisation_code/bsairfoil.txt", "w")
 f.write('BSA') 
 f.write('\n')
 
