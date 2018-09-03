@@ -1,10 +1,8 @@
 import subprocess as sp
-#import os
 import shutil
 import sys
 import string
 
- 
 ps = sp.Popen(['xfoil'],
               stdin=sp.PIPE,
               stdout=None,
