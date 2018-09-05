@@ -10,17 +10,18 @@ import shutil
 import sys
 import string
 import re
+import os
 
 class airfoil():
-    def __init__(self, uPoint, lPoint, cost):
+    def __init__(self):
         
         self.uPoint = np.zeros((5,2))
         self.lPoint = np.zeros((5,2))
         self.plotX = []
         self.plotY = []
-        self.cost = 0
+        self.cost = 0.0
 
-    def bspline(self, parameter_list): #Import bspline.py
+    def bspline(self): #Import bspline.py
 
         LBY = 0.05 # Upper Array
         UBY = 0.2
@@ -90,48 +91,27 @@ class airfoil():
 
         STL_Gen(X,Y,1)
 
-    def xFoil(self, parameter_list):    #Extraction of L/d done
-        ps = sp.Popen(['xfoil'],
-                  stdin=sp.PIPE,
-                  stdout=None,
-                  stderr=None)
+    def xFoil(self):    #Extraction of L/d done
+        sp.Popen(['xfoil <controlfile.xfoil>outputfile.out'],
+         stdin=sp.PIPE,
+         stdout=None,
+         stderr=None,
+         shell=True
+         )
+        while 1:
+            if os.path.isfile("bsx.txt"):        
+                f = open("bsx.txt", "r")
+                for line in f:
+                    line = f.read()
+                break
 
-        cmd = 'load bsairfoil.txt\n'
+        p = re.findall('\s+[.\d]{5}\s+([.\d]{6})\s+([.\d]{6})', line)
 
-        def issueCmd(cmd,echo=True):
-            ps.stdin.write(cmd.encode('utf-8'))
-            if echo:
-               print(cmd)
+        r = float(p[0][0])/float(p[0][1])
 
-        issueCmd(cmd)
-
-        cmdn = ["oper\n",
-                "v\n",
-                "1.346e6\n", 
-                "iter 5000\n", 
-                "pacc\n",
-                "bsa.out\n\n",
-                "alfa 0\n",
-                "pacc\n",
-                "cpwr cp_a0.dat\n",
-                "dump d.dat\n",
-                "hard\n",
-                "\n", 
-                "quit\n"]
-
-
-        for i in range(len(cmdn)):
-            issueCmd(cmdn[i])
-
-        f = open("bsa.txt", "r")
-        for line in f:
-             line = f.read()
-
-        p = re.findall('^\s+[.\d]{5}\s+([.\d]{6})\s+([.\d]{6})', line)
-
-        return p
-
-    def cfd(self, parameter_list):  #Extract result from post processing
+        self.cost = r
+        
+    def cfd(self):  #Extract result from post processing
 
         f = open("/home/pranshu/Desktop/openFoam/2D_SImpleFoamWing_1/postProcessing/forceCoeffs1/0/forceCoeffs.dat", "r")
         for line in f:
@@ -139,17 +119,19 @@ class airfoil():
 
         p = re.findall('999\s+([-.A-Za-z0-9]+)\s+([-.A-Za-z0-9]+)', line)
 
-        return p
+        r = float(p[0][0])/float(p[0][1])
 
-    def reproduce(self, progeny):
+        self.cost = r
+
+    def reproduce(self):
 
         print("1")
 
     def show(self):   #display using matplotlib
 
-        plt.plot(self.uPoint[0], self.uPoint[1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
+        plt.plot(self.uPoint[:,0], self.uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
        
-        plt.plot(self.lPoint[0],self.lPoint[1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
+        plt.plot(self.lPoint[:,0],self.lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
        
         plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
         
