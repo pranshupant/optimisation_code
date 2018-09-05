@@ -13,8 +13,9 @@ import re
 import os
 
 class airfoil():
-    def __init__(self):
+    def __init__(self, num):
         
+        self.number = num
         self.uPoint = np.zeros((5,2))
         self.lPoint = np.zeros((5,2))
         self.plotX = []
