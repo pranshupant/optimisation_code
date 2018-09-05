@@ -11,5 +11,4 @@ ps = sp.Popen(['xfoil <controlfile.xfoil>outputfile.out'],
               stdout=None,
               stderr=None,
               shell=True
-              #preexec_fn=os.setsid
-                )
+              )
