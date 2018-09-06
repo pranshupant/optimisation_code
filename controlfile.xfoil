@@ -1,5 +1,5 @@
 cat <<EOF > controlfile.xfoil
-LOAD bsairfoil.txt
+LOAD Airfoil.txt
 
 OPER
 RE 1.346e6
@@ -7,7 +7,7 @@ VISC
 ITER
 5000
 PACC
-bsx.txt
+solution.txt
 
 N
 ALFA 0.0
