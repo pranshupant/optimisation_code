@@ -7,20 +7,23 @@ from stl import mesh
 from stl_gen import STL_Gen
 import subprocess as sp
 import shutil
+from shutil import copyfile, copytree
 import sys
 import string
 import re
 import os
+import time
 
 class airfoil():
-    def __init__(self, num):
+    def __init__(self, gen, spec):
         
-        self.number = num
+        self.generation = gen
+        self.specie = spec
         self.uPoint = np.zeros((5,2))
         self.lPoint = np.zeros((5,2))
         self.plotX = []
         self.plotY = []
-        self.cost = 0.0
+        self.cost = 0.000
 
     def bspline(self): #Import bspline.py
 
@@ -78,42 +81,139 @@ class airfoil():
         
         X1=np.array(out[0])
         X2=np.array(out1[0])
-        X3=X2[: : -1]
+        X3=X1[: : -1]
 
-        X=np.concatenate((X1,X3), 0)
+        X=np.concatenate((X3,X2), 0)
         self.plotX = X
 
         Y1=np.array(out[1])
         Y2=np.array(out1[1])
-        Y3=Y2[: : -1]
+        Y3=Y1[: : -1]
 
-        Y=np.concatenate((Y1,Y3), 0)
+        Y=np.concatenate((Y3,Y2), 0)
         self.plotY = Y
 
-        STL_Gen(X,Y,1)
+        #STL_Gen(X,Y,1)
+        print("Airfoil created")
 
-    def xFoil(self):    #Extraction of L/d done
+
+    def write(self):
+
+        if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))):
+            os.makedirs("Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))
+
+        f = open("Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(self.generation,self.specie,self.generation,self.specie),"w+")
+
+        f.write("Airfoil_%i-%i"%(self.generation,self.specie))
+        f.write("\n")
+
+        for i in range(len(self.plotX)):
+            f.write(str(self.plotX[i]))
+            f.write(" ")
+            f.write(str(self.plotY[i]))
+            f.write("\n")
+        f.close()
+
+        f = open("Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(self.generation,self.specie,self.generation,self.specie),"w+")
+
+        for i in range(5):
+            f.write(str(self.uPoint[i]).strip('[]'))
+            f.write('\n')
+        for i in range(5):
+            f.write(str(self.lPoint[i]).strip('[]'))
+            f.write('\n')
+        f.close()
+
+        if(not os.path.isdir("Results_CFD/Generation_%i/Specie_%i" %(self.generation,self.specie))):
+            os.makedirs("Results_CFD/Generation_%i/Specie_%i" %(self.generation,self.specie))
+
+        f = open('Results_CFD/Generation_%i/Specie_%i/plot_Airfoil_%i-%i'%(self.generation,self.specie,self.generation,self.specie),"w+")
+
+        f.write("Airfoil_%i-%i"%(self.generation,self.specie))
+        f.write("\n")
+
+        for i in range(len(self.plotX)):
+            f.write(str(self.plotX[i]))
+            f.write(' ')
+            f.write(str(self.plotY[i]))
+            f.write('\n')
+        f.close()
+
+        f = open('Results_CFD/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i'%(self.generation,self.specie,self.generation,self.specie),"w+")
+
+        for i in range(5):
+            f.write(str(self.uPoint[i]).strip('[]'))
+            f.write('\n')
+        for i in range(5):
+            f.write(str(self.lPoint[i]).strip('[]'))
+            f.write('\n')
+        f.close()
+        
+
+    def xFoil(self): 
+        
+        #Extraction of L/d done
+        os.chdir('/home/pranshu/Documents/Visual Studio Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i'%(self.generation,self.specie))
+        print(os.getcwd())
+
+        copyfile("plot_Airfoil_%i-%i" %(self.generation,self.specie), "Airfoil.txt")
+        copyfile("../../../controlfile.xfoil", "controlfile.xfoil")
+
+        t1 = time.time()
+
         sp.Popen(['xfoil <controlfile.xfoil>outputfile.out'],
          stdin=sp.PIPE,
          stdout=None,
          stderr=None,
          shell=True
          )
+
         while 1:
-            if os.path.isfile("bsx.txt"):        
-                f = open("bsx.txt", "r")
-                for line in f:
-                    line = f.read()
+
+            if os.path.isfile('plot.ps'):
+                #print(time.time() - t1)
                 break
 
-        p = re.findall('\s+[.\d]{5}\s+([.\d]{6})\s+([.\d]{6})', line)
+       # time.sleep(1)
+        
+        
+        if os.path.isfile("solution.txt"):        
+            f = open("solution.txt", "r+")
+            for line in f:
+                line = f.read()
 
+        else:
+
+            p=[]
+            p.append([0,0])
+        
+
+        p=[]
+        p.append([0,0])
+    
+
+        p = re.findall('\s+[.\d]{5}\s+-?([.\d]{6})\s+-?([.\d]{7})', line)
+
+        print(p[0])
+
+        
         r = float(p[0][0])/float(p[0][1])
 
         self.cost = r
-        
+
     def cfd(self):  #Extract result from post processing
 
+        os.chdir('/home/pranshu/Documents/Visual Studio Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i'%(self.generation,self.specie))
+
+        copytree('/home/pranshu/Desktop/openFoam/2D_SImpleFoamWing_1', '../../CFD')
+                
+        os.chdir('/home/pranshu/Documents/Visual Studio Code/optimisation_code/CFD')
+
+        print(os.getcwd())
+        sp.call(['./Allclean'])
+        sp.call(['./Allrun.sh'])
+
+        
         f = open("/home/pranshu/Desktop/openFoam/2D_SImpleFoamWing_1/postProcessing/forceCoeffs1/0/forceCoeffs.dat", "r")
         for line in f:
              line = f.read()
