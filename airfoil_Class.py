@@ -93,7 +93,7 @@ class airfoil():
         Y=np.concatenate((Y3,Y2), 0)
         self.plotY = Y
 
-        #STL_Gen(X,Y,1)
+        #STL_Gen(X,Y,g,s)
         print("Airfoil created")
 
 
@@ -148,18 +148,18 @@ class airfoil():
             f.write(str(self.lPoint[i]).strip('[]'))
             f.write('\n')
         f.close()
-        
+              
 
     def xFoil(self): 
         
         #Extraction of L/d done
-        os.chdir('/home/pranshu/Documents/Visual Studio Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i'%(self.generation,self.specie))
+        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i'%(self.generation,self.specie))
         print(os.getcwd())
 
         copyfile("plot_Airfoil_%i-%i" %(self.generation,self.specie), "Airfoil.txt")
         copyfile("../../../controlfile.xfoil", "controlfile.xfoil")
 
-        t1 = time.time()
+        #t1 = time.time()
 
         sp.Popen(['xfoil <controlfile.xfoil>outputfile.out'],
          stdin=sp.PIPE,
@@ -168,53 +168,60 @@ class airfoil():
          shell=True
          )
 
-        while 1:
+        p = []
+
+        t1 = time.time()
+
+        t2 = 0
+
+        while t2 < 5:
+
+            t2 = time.time() - t1
 
             if os.path.isfile('plot.ps'):
-                #print(time.time() - t1)
+                
+                if os.path.isfile("solution.txt"):        
+                    f = open("solution.txt", "r+")
+                    for line in f:
+                        line = f.read()      
+
+                    p = re.findall('\s+[.\d]{5}\s+-?([.\d]{6})\s+-?([.\d]{7})', line) 
                 break
 
-       # time.sleep(1)
-        
-        
-        if os.path.isfile("solution.txt"):        
-            f = open("solution.txt", "r+")
-            for line in f:
-                line = f.read()
+            else:
 
-        else:
+                p.append([0,1])
+               # print("File not found")
+          
 
-            p=[]
-            p.append([0,0])
-        
+        if not p:
 
-        p=[]
-        p.append([0,0])
-    
+            r = 0
+            self.cost = r
 
-        p = re.findall('\s+[.\d]{5}\s+-?([.\d]{6})\s+-?([.\d]{7})', line)
-
-        print(p[0])
-
-        
-        r = float(p[0][0])/float(p[0][1])
-
-        self.cost = r
+        elif p:
+            
+            r = float(p[0][0])/float(p[0][1])
+            self.cost = r
 
     def cfd(self):  #Extract result from post processing
 
-        os.chdir('/home/pranshu/Documents/Visual Studio Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i'%(self.generation,self.specie))
+        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i'%(self.generation,self.specie))
+        #os.mkdir('CFD')
 
-        copytree('/home/pranshu/Desktop/openFoam/2D_SImpleFoamWing_1', '../../CFD')
-                
-        os.chdir('/home/pranshu/Documents/Visual Studio Code/optimisation_code/CFD')
+        copytree('/home/pranshu/Desktop/openFoam/IWO_CFD_orig', 'CFD')
+               
+        os.chdir('CFD')
+
+        STL_Gen(self.plotX,self.plotY,self.generation,self.specie)
+
 
         print(os.getcwd())
         sp.call(['./Allclean'])
         sp.call(['./Allrun.sh'])
 
         
-        f = open("/home/pranshu/Desktop/openFoam/2D_SImpleFoamWing_1/postProcessing/forceCoeffs1/0/forceCoeffs.dat", "r")
+        f = open("postProcessing/forceCoeffs1/0/forceCoeffs.dat", "r")
         for line in f:
              line = f.read()
 
@@ -240,3 +247,18 @@ class airfoil():
         plt.axis([min(self.plotX)-0.1, max(self.plotX)+0.1, min(self.plotY)-0.5, max(self.plotY)+0.5])
         plt.title('Cubic B-spline curve evaluation')
         plt.show()
+
+    def savefig(self):   #display using matplotlib
+
+        plt.plot(self.uPoint[:,0], self.uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
+       
+        plt.plot(self.lPoint[:,0],self.lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
+       
+        plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
+        
+        plt.legend(loc='best')
+        plt.axis([min(self.plotX)-0.1, max(self.plotX)+0.1, min(self.plotY)-0.5, max(self.plotY)+0.5])
+        plt.title('Cubic B-spline curve evaluation')
+        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = "tight")
+        #copyfile('airfoil_%i-%i.png', '/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie))
+        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = 'tight')
