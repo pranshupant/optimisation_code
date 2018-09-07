@@ -5,7 +5,7 @@ OPER
 RE 1.346e6
 VISC
 ITER
-5000
+3000
 PACC
 solution.txt
 
