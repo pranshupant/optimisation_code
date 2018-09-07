@@ -3,7 +3,7 @@ import stl
 import shutil
 from stl import mesh
 
-def STL_Gen(x,y,I):
+def STL_Gen(x,y,g,s):
     res = len(x)
    # x=[x[i]/1000 for i in range(len(x))]
     #y=[y[i]/1000 for i in range(len(x))]
@@ -30,6 +30,6 @@ def STL_Gen(x,y,I):
     for i, f in enumerate(faces):
         for j in range(3):
             suf.vectors[i][j]= vertices[f[j],:]
-    suf.save('Airfoil%i.stl'%I, mode=stl.Mode.ASCII)
-    shutil.move('Airfoil%i.stl'%I, '../../../Desktop/openFoam/2D_SImpleFoamWing_1/constant/triSurface/Airfoil%i.stl'%I)
+    suf.save('Airfoil_%i-%i.stl'%(g,s), mode=stl.Mode.ASCII)
+    shutil.copyfile('Airfoil_%i-%i.stl'%(g,s), 'constant/triSurface/Airfoil1.stl')
     
