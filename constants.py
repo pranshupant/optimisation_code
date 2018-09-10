@@ -1,9 +1,9 @@
 i=0
-maxIt = 50
+maxIt = 5
 Gen0 = 15
 nPop = 15
 exponent = 2
-sigma_initial = 0.7
+sigma_initial = 0.5
 sigma_final = 0.001
 Cmin = 0.5
-Cmax = 3
+Cmax = 5

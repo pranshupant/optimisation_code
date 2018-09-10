@@ -1,9 +1,9 @@
 from constants import Cmax, Cmin 
+from airfoil_Class import baby_airfoil
+import random
 
-def reproduction(Airfoil, gen, sigma, i):  
-                        
-    global s
-
+def reproduction(Airfoil, gen, sigma, i, s):  
+                     
     costs = []
 
     for t in range(len(Airfoil)):
@@ -13,15 +13,28 @@ def reproduction(Airfoil, gen, sigma, i):
 
     WorstCost = max(costs)
 
-    ratio = (Airfoil[i].Cost - WorstCost)/(BestCost - WorstCost)
+    ratio = (Airfoil[i].cost - WorstCost)/(BestCost - WorstCost)
     C = int(Cmin + (Cmax - Cmin)*ratio)
+
+    print(C)
 
     if C > 0:
 
-        for j in range(C):
+        progeny = []
 
-            Airfoil[j].new(gen, s, sigma)
-            Airfoil[j].bspline()
-            Airfoil[j].write()
-            Airfoil[j].xFoil()
-            s += 1
+        for j in range(C):
+        
+            progeny.append(baby_airfoil(Airfoil[i], gen, s[0]))
+
+            progeny[j].new(sigma)
+            progeny[j].bspline()
+            progeny[j].write()
+            progeny[j].savefig()
+
+                     
+            s[0] += 1
+
+    for j in range(C):
+
+        progeny[j].xFoil()
+        Airfoil.append(progeny[j])

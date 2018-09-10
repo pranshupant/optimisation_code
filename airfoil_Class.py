@@ -99,10 +99,13 @@ class airfoil():
 
     def write(self):
 
-        if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))):
-            os.makedirs("Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))
+        print(self.generation)
+        print(self.specie)
 
-        f = open("Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(self.generation,self.specie,self.generation,self.specie),"w+")
+        if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))):
+            os.makedirs("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))
+            
+        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(self.generation,self.specie,self.generation,self.specie),"w+")
 
         f.write("Airfoil_%i-%i"%(self.generation,self.specie))
         f.write("\n")
@@ -114,7 +117,7 @@ class airfoil():
             f.write("\n")
         f.close()
 
-        f = open("Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(self.generation,self.specie,self.generation,self.specie),"w+")
+        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(self.generation,self.specie,self.generation,self.specie),"w+")
 
         for i in range(5):
             f.write(str(self.uPoint[i]).strip('[]'))
@@ -190,19 +193,22 @@ class airfoil():
 
             else:
 
-                p.append([0,1])
+                p.append([1,1])
                # print("File not found")
           
 
         if not p:
 
-            r = 0
+            r = 1
             self.cost = r
 
         elif p:
             
             r = float(p[0][0])/float(p[0][1])
             self.cost = r
+
+        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code')
+        
 
     def cfd(self):  #Extract result from post processing
 
@@ -230,6 +236,9 @@ class airfoil():
         r = float(p[0][0])/float(p[0][1])
 
         self.cost = r
+
+        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code')
+
 
     def reproduce(self):
 
@@ -262,11 +271,25 @@ class airfoil():
         plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = "tight")
         #copyfile('airfoil_%i-%i.png', '/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie))
         plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = 'tight')
-    def new(self, g, s, sigma):
+
+class baby_airfoil(airfoil):
+
+    def __init__(self, Airfoil, g, s):
 
         self.generation = g
-        self.specie =s
+        self.specie = s
+        self.uPoint = Airfoil.uPoint
+        self.lPoint = Airfoil.lPoint
+        self.plotX = Airfoil.plotX
+        self.plotY = Airfoil.plotY
+        self.cost = 0.000
 
+
+
+    def new(self, sigma):
+
+       # print('%i-%i'%(self.generation, self.specie))
+        print(self.lPoint)
         LBY = 0.05 # Upper Array
         UBY = 0.2
 
@@ -276,31 +299,32 @@ class airfoil():
         LBX = 0.1
         UBX = 0.8 
 
-        self.uPoint[1][1] = self.uPoint[1][0] + sigma*random.uniform(-1,1)   
-        self.uPoint[1][1] = max(self.uPoint[1][0], -0.05)
-        self.uPoint[1][1] = min(self.uPoint[1][0], -0.1)
+        self.uPoint[1][1] = self.uPoint[1][0] + 0.01*sigma*random.uniform(-1,1)   
+        #self.uPoint[1][1] = max(self.uPoint[1][0], -0.05)
+        #self.uPoint[1][1] = min(self.uPoint[1][0], -0.1)
 
-        self.lPoint[1][1] = self.lPoint[1][0] + sigma*random.uniform(-1,1)   
-        self.lPoint[1][1] = max(self.lPoint[1][0], 0.2)
-        self.lPoint[1][1] = min(self.lPoint[1][0], 0.05)
+        self.lPoint[1][1] = self.lPoint[1][0] + 0.01*sigma*random.uniform(-1,1)   
+        #self.lPoint[1][1] = max(self.lPoint[1][0], 0.2)
+        #self.lPoint[1][1] = min(self.lPoint[1][0], 0.05)
 
 
         for i in range(2,4):
-            self.uPoint[i][0] = self.uPoint[i][0] + sigma*random.uniform(-1,1)
-            self.lPoint[i][0] = self.uPoint[i][0] + sigma*random.uniform(-1,1)    
+            self.uPoint[i][0] = self.uPoint[i][0] + 0.01*sigma*random.uniform(-1,1)
+            self.lPoint[i][0] = self.uPoint[i][0] + 0.01*sigma*random.uniform(-1,1)    
       
-            self.uPoint[i][0] = max(self.uPoint[i][0], UBX)
-            self.uPoint[i][0] = min(self.uPoint[i][0], LBX)
-
-            self.lPoint[i][0] = max(self.lPoint[i][0], UBX)
-            self.lPoint[i][0] = min(self.lPoint[i][0], LBX)
+            #self.uPoint[i][0] = max(self.uPoint[i][0], UBX)
+            #self.uPoint[i][0] = min(self.uPoint[i][0], LBX)
+#
+            #self.lPoint[i][0] = max(self.lPoint[i][0], UBX)
+            #self.lPoint[i][0] = min(self.lPoint[i][0], LBX)
 
         for i in range(2,4):
-            self.uPoint[i][1] = self.uPoint[i][1] + sigma*random.uniform(-1,1)
-            self.lPoint[i][1] = self.uPoint[i][1] + sigma*random.uniform(-1,1)    
+            self.uPoint[i][1] = self.uPoint[i][1] + 0.01*sigma*random.uniform(-1,1)
+            self.lPoint[i][1] = self.uPoint[i][1] + 0.01*sigma*random.uniform(-1,1)    
 
-            self.uPoint[i][1] = max(self.uPoint[i][1], UBY2)
-            self.uPoint[i][1] = min(self.uPoint[i][1], LBY2)
+           # self.uPoint[i][1] = max(self.uPoint[i][1], UBY2)
+           # self.uPoint[i][1] = min(self.uPoint[i][1], LBY2)
+#
+           # self.lPoint[i][1] = max(self.lPoint[i][1], UBY)
+           # self.lPoint[i][1] = min(self.lPoint[i][1], LBY)
 
-            self.lPoint[i][1] = max(self.lPoint[i][1], UBY)
-            self.lPoint[i][1] = min(self.lPoint[i][1], LBY)
