@@ -99,8 +99,8 @@ class airfoil():
 
     def write(self):
 
-        print(self.generation)
-        print(self.specie)
+        #print(self.generation)
+        #print(self.specie)
 
         if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))):
             os.makedirs("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))
@@ -271,7 +271,7 @@ class airfoil():
         plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = "tight")
         #copyfile('airfoil_%i-%i.png', '/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie))
         plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = 'tight')
-
+        plt.close()
 class baby_airfoil(airfoil):
 
     def __init__(self, Airfoil, g, s):
@@ -282,49 +282,49 @@ class baby_airfoil(airfoil):
         self.lPoint = Airfoil.lPoint
         self.plotX = Airfoil.plotX
         self.plotY = Airfoil.plotY
-        self.cost = 0.000
+        self.cost = Airfoil.cost
 
 
 
     def new(self, sigma):
 
        # print('%i-%i'%(self.generation, self.specie))
-        print(self.lPoint)
-        LBY = 0.05 # Upper Array
-        UBY = 0.2
+        #print(self.lPoint)
+        LBY = 0.1 # Upper Array
+        UBY = 0.25
 
         LBY2 = -0.1 # Lower Array
-        UBY2 = 0.1
+        UBY2 = 0.025
 
         LBX = 0.1
         UBX = 0.8 
 
-        self.uPoint[1][1] = self.uPoint[1][0] + 0.01*sigma*random.uniform(-1,1)   
-        #self.uPoint[1][1] = max(self.uPoint[1][0], -0.05)
-        #self.uPoint[1][1] = min(self.uPoint[1][0], -0.1)
+        self.uPoint[1][1] = self.uPoint[1][1] + 0.25*sigma*random.uniform(-1,1)   
+        self.uPoint[1][1] = max(self.uPoint[1][1], -0.1)
+        self.uPoint[1][1] = min(self.uPoint[1][1], -0.05)
 
-        self.lPoint[1][1] = self.lPoint[1][0] + 0.01*sigma*random.uniform(-1,1)   
-        #self.lPoint[1][1] = max(self.lPoint[1][0], 0.2)
-        #self.lPoint[1][1] = min(self.lPoint[1][0], 0.05)
+        self.lPoint[1][1] = self.lPoint[1][1] + 0.25*sigma*random.uniform(-1,1)   
+        self.lPoint[1][1] = min(self.lPoint[1][1], 0.15)
+        self.lPoint[1][1] = max(self.lPoint[1][1], 0.05)
 
 
         for i in range(2,4):
-            self.uPoint[i][0] = self.uPoint[i][0] + 0.01*sigma*random.uniform(-1,1)
-            self.lPoint[i][0] = self.uPoint[i][0] + 0.01*sigma*random.uniform(-1,1)    
+            self.uPoint[i][0] = self.uPoint[i][0] + 0.25*sigma*random.uniform(-1,1)
+            self.lPoint[i][0] = self.uPoint[i][0] + 0.25*sigma*random.uniform(-1,1)    
       
-            #self.uPoint[i][0] = max(self.uPoint[i][0], UBX)
-            #self.uPoint[i][0] = min(self.uPoint[i][0], LBX)
-#
-            #self.lPoint[i][0] = max(self.lPoint[i][0], UBX)
-            #self.lPoint[i][0] = min(self.lPoint[i][0], LBX)
+            self.uPoint[i][0] = min(self.uPoint[i][0], UBX)
+            self.uPoint[i][0] = max(self.uPoint[i][0], self.uPoint[i-1][0]+0.1)
+
+            self.lPoint[i][0] = min(self.lPoint[i][0], UBX)
+            self.lPoint[i][0] = max(self.lPoint[i][0], self.lPoint[i-1][0]+0.1)
 
         for i in range(2,4):
-            self.uPoint[i][1] = self.uPoint[i][1] + 0.01*sigma*random.uniform(-1,1)
-            self.lPoint[i][1] = self.uPoint[i][1] + 0.01*sigma*random.uniform(-1,1)    
+            self.uPoint[i][1] = self.uPoint[i][1] + 0.25*sigma*random.uniform(-1,1)
+            self.lPoint[i][1] = self.uPoint[i][1] + 0.25*sigma*random.uniform(-1,1)    
 
-           # self.uPoint[i][1] = max(self.uPoint[i][1], UBY2)
-           # self.uPoint[i][1] = min(self.uPoint[i][1], LBY2)
-#
-           # self.lPoint[i][1] = max(self.lPoint[i][1], UBY)
-           # self.lPoint[i][1] = min(self.lPoint[i][1], LBY)
+            self.uPoint[i][1] = min(self.uPoint[i][1], UBY2)
+            self.uPoint[i][1] = max(self.uPoint[i][1], LBY2)
+
+            self.lPoint[i][1] = min(self.lPoint[i][1], UBY)
+            self.lPoint[i][1] = max(self.lPoint[i][1], self.uPoint[i][1]+0.1)
 
