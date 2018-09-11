@@ -28,10 +28,7 @@ if __name__ == "__main__":
 
     while gen < maxIt:
 
-        sigma = (((maxIt - float(i))/(maxIt - 1))**exponent)*(sigma_initial - sigma_final) + sigma_final
-
-        for x in range(len(Airfoil)):
-            reproduction(Airfoil, gen, sigma, x, s)      
+        sigma = (((maxIt - float(i))/maxIt)**exponent)*(sigma_initial - sigma_final) + sigma_final
 
         Airfoil.sort(key = lambda x: x.cost, reverse = True)
 
@@ -40,8 +37,21 @@ if __name__ == "__main__":
 
         del Airfoil[nPop:]
 
-        gen += 1 
-        s[0] = 0
-     
+        for i in range(len(Airfoil)):
+            print(Airfoil[i].cost)
 
-        
+        parent = []
+    
+        for k in range(nPop):
+            parent.append(baby_airfoil(Airfoil[k], gen, s[0]))
+            parent[k].write()
+
+            s[0] += 1 
+
+
+        for x in range(len(Airfoil)):
+            reproduction(Airfoil, gen, sigma, x, s)      
+
+
+        gen += 1 
+        s[0] = 0      
