@@ -1,6 +1,6 @@
 i=0
 maxIt = 50
-Gen0 = 20
+Gen0 = 50
 nPop = 15
 exponent = 2
 sigma_initial = 0.7

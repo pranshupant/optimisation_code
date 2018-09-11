@@ -28,16 +28,16 @@ class airfoil():
     def ctrlPoints(self): #Import bspline.py
 
         LBY = 0.05 # Upper Array
-        UBY = 0.2
+        UBY = 0.25
 
         LBY2 = -0.1 # Lower Array
         UBY2 = 0.1
 
-        LBX = 0.1
-        UBX = 0.8
+        LBX = 0.05
+        UBX = 0.85
 
         
-        self.uPoint[1] = [0, random.uniform(-0.1, -0.05)] # Lower Array
+        self.uPoint[1] = [0, random.uniform(-0.1, -0.025)] # Lower Array
         self.uPoint[4] = [1, 0]
 
         for i in range(2, 4):
@@ -45,7 +45,7 @@ class airfoil():
                                          (0.4 if (i==2) else UBX))
             self.uPoint[i][1] = random.uniform(LBY2, UBY2)
 
-        self.lPoint[1] = [0, random.uniform(0.05, 0.2)] # Upper Array
+        self.lPoint[1] = [0, random.uniform(0.05, 0.3)] # Upper Array
         self.lPoint[4] = [1, 0]
 
         for i in range(2, 4):
@@ -290,27 +290,27 @@ class baby_airfoil(airfoil):
 
        # print('%i-%i'%(self.generation, self.specie))
         #print(self.lPoint)
-        LBY = 0.1 # Upper Array
-        UBY = 0.25
+        LBY = 0.05 # Upper Array
+        UBY = 0.5
 
         LBY2 = -0.1 # Lower Array
-        UBY2 = 0.025
+        UBY2 = 0.1
 
-        LBX = 0.1
-        UBX = 0.8 
+        LBX = 0.05
+        UBX = 0.85
 
-        self.uPoint[1][1] = self.uPoint[1][1] + 0.25*sigma*random.uniform(-1,1)   
+        self.uPoint[1][1] = self.uPoint[1][1] + 0.5*sigma*random.uniform(-1,1)   
         self.uPoint[1][1] = max(self.uPoint[1][1], -0.1)
-        self.uPoint[1][1] = min(self.uPoint[1][1], -0.05)
+        self.uPoint[1][1] = min(self.uPoint[1][1], -0.025)
 
-        self.lPoint[1][1] = self.lPoint[1][1] + 0.25*sigma*random.uniform(-1,1)   
-        self.lPoint[1][1] = min(self.lPoint[1][1], 0.15)
+        self.lPoint[1][1] = self.lPoint[1][1] + 0.5*sigma*random.uniform(-1,1)   
+        self.lPoint[1][1] = min(self.lPoint[1][1], 0.3)
         self.lPoint[1][1] = max(self.lPoint[1][1], 0.05)
 
 
         for i in range(2,4):
-            self.uPoint[i][0] = self.uPoint[i][0] + 0.25*sigma*random.uniform(-1,1)
-            self.lPoint[i][0] = self.uPoint[i][0] + 0.25*sigma*random.uniform(-1,1)    
+            self.uPoint[i][0] = self.uPoint[i][0] + 0.5*sigma*random.uniform(-1,1)
+            self.lPoint[i][0] = self.uPoint[i][0] + 0.5*sigma*random.uniform(-1,1)    
       
             self.uPoint[i][0] = min(self.uPoint[i][0], UBX)
             self.uPoint[i][0] = max(self.uPoint[i][0], self.uPoint[i-1][0]+0.1)
@@ -319,8 +319,8 @@ class baby_airfoil(airfoil):
             self.lPoint[i][0] = max(self.lPoint[i][0], self.lPoint[i-1][0]+0.1)
 
         for i in range(2,4):
-            self.uPoint[i][1] = self.uPoint[i][1] + 0.25*sigma*random.uniform(-1,1)
-            self.lPoint[i][1] = self.uPoint[i][1] + 0.25*sigma*random.uniform(-1,1)    
+            self.uPoint[i][1] = self.uPoint[i][1] + 0.5*sigma*random.uniform(-1,1)
+            self.lPoint[i][1] = self.uPoint[i][1] + 0.5*sigma*random.uniform(-1,1)    
 
             self.uPoint[i][1] = min(self.uPoint[i][1], UBY2)
             self.uPoint[i][1] = max(self.uPoint[i][1], LBY2)

@@ -15,6 +15,7 @@ for i in range(Gen0):
     Airfoil[i].ctrlPoints()
     Airfoil[i].bspline()
     Airfoil[i].write()
+    Airfoil[i].savefig()
 
 for i in range(Gen0):
     #Airfoil[i].savefig()
@@ -47,6 +48,9 @@ if __name__ == "__main__":
             parent[k].write()
 
             s[0] += 1 
+
+        for k in range(nPop):
+            parent[k].xFoil()
 
 
         for x in range(len(Airfoil)):
