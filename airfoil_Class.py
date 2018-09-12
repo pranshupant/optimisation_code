@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import interpolate
+from constants import M
 import matplotlib.pyplot as plt
 import random
 import stl
@@ -293,24 +294,24 @@ class baby_airfoil(airfoil):
         LBY = 0.05 # Upper Array
         UBY = 0.5
 
-        LBY2 = -0.1 # Lower Array
-        UBY2 = 0.1
+        LBY2 = -0.15 # Lower Array
+        UBY2 = 0.15
 
-        LBX = 0.05
+        LBX = 0.025
         UBX = 0.85
 
-        self.uPoint[1][1] = self.uPoint[1][1] + 0.5*sigma*random.uniform(-1,1)   
+        self.uPoint[1][1] = self.uPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.uPoint[1][1] = max(self.uPoint[1][1], -0.1)
         self.uPoint[1][1] = min(self.uPoint[1][1], -0.025)
 
-        self.lPoint[1][1] = self.lPoint[1][1] + 0.5*sigma*random.uniform(-1,1)   
+        self.lPoint[1][1] = self.lPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.lPoint[1][1] = min(self.lPoint[1][1], 0.3)
         self.lPoint[1][1] = max(self.lPoint[1][1], 0.05)
 
 
         for i in range(2,4):
-            self.uPoint[i][0] = self.uPoint[i][0] + 0.5*sigma*random.uniform(-1,1)
-            self.lPoint[i][0] = self.uPoint[i][0] + 0.5*sigma*random.uniform(-1,1)    
+            self.uPoint[i][0] = self.uPoint[i][0] + M*sigma*random.uniform(-1,1)
+            self.lPoint[i][0] = self.uPoint[i][0] + M*sigma*random.uniform(-1,1)    
       
             self.uPoint[i][0] = min(self.uPoint[i][0], UBX)
             self.uPoint[i][0] = max(self.uPoint[i][0], self.uPoint[i-1][0]+0.1)
@@ -319,8 +320,8 @@ class baby_airfoil(airfoil):
             self.lPoint[i][0] = max(self.lPoint[i][0], self.lPoint[i-1][0]+0.1)
 
         for i in range(2,4):
-            self.uPoint[i][1] = self.uPoint[i][1] + 0.5*sigma*random.uniform(-1,1)
-            self.lPoint[i][1] = self.uPoint[i][1] + 0.5*sigma*random.uniform(-1,1)    
+            self.uPoint[i][1] = self.uPoint[i][1] + M*sigma*random.uniform(-1,1)
+            self.lPoint[i][1] = self.uPoint[i][1] + M*sigma*random.uniform(-1,1)    
 
             self.uPoint[i][1] = min(self.uPoint[i][1], UBY2)
             self.uPoint[i][1] = max(self.uPoint[i][1], LBY2)
