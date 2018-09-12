@@ -189,7 +189,7 @@ class airfoil():
                     for line in f:
                         line = f.read()      
 
-                    p = re.findall('\s+[.\d]{5}\s+-?([.\d]{6})\s+-?([.\d]{7})', line) 
+                    p = re.findall('\s+[.\d]{5}\s+(-?[.\d]{6})\s+(-?[.\d]{7})', line) 
                 break
 
             else:
@@ -294,7 +294,7 @@ class baby_airfoil(airfoil):
         LBY = 0.05 # Upper Array
         UBY = 0.5
 
-        LBY2 = -0.15 # Lower Array
+        LBY2 = -0.1 # Lower Array
         UBY2 = 0.15
 
         LBX = 0.025
@@ -306,7 +306,7 @@ class baby_airfoil(airfoil):
 
         self.lPoint[1][1] = self.lPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.lPoint[1][1] = min(self.lPoint[1][1], 0.3)
-        self.lPoint[1][1] = max(self.lPoint[1][1], 0.05)
+        self.lPoint[1][1] = max(self.lPoint[1][1], 0.1)
 
 
         for i in range(2,4):
