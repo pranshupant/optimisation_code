@@ -7,3 +7,4 @@ sigma_initial = 0.7
 sigma_final = 0.001
 Cmin = 0.5
 Cmax = 5
+M = 0.75
