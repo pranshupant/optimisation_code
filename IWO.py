@@ -51,7 +51,8 @@ if __name__ == "__main__":
 
         for k in range(nPop):
             parent[k].xFoil()
-
+            #parent[k].cfd()
+            parent[k].savefig()
 
         for x in range(len(Airfoil)):
             reproduction(Airfoil, gen, sigma, x, s)      
