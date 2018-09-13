@@ -46,7 +46,7 @@ class airfoil():
                                          (0.4 if (i==2) else UBX))
             self.uPoint[i][1] = random.uniform(LBY2, UBY2)
 
-        self.lPoint[1] = [0, random.uniform(0.05, 0.3)] # Upper Array
+        self.lPoint[1] = [0, random.uniform(0.05, 0.25)] # Upper Array
         self.lPoint[4] = [1, 0]
 
         for i in range(2, 4):
@@ -178,7 +178,7 @@ class airfoil():
 
         t2 = 0
 
-        while t2 < 5:
+        while t2 < 3:
 
             t2 = time.time() - t1
 
@@ -227,16 +227,26 @@ class airfoil():
         sp.call(['./Allclean'])
         sp.call(['./Allrun.sh'])
 
-        
-        f = open("postProcessing/forceCoeffs1/0/forceCoeffs.dat", "r")
-        for line in f:
-             line = f.read()
+        if os.path.isfile('postProcessing/forceCoeffs1/0/forceCoeffs.dat'):
 
-        p = re.findall('999\s+([-.A-Za-z0-9]+)\s+([-.A-Za-z0-9]+)', line)
+            f = open("postProcessing/forceCoeffs1/0/forceCoeffs.dat", "r")
+            for line in f:
+                 line = f.read()
 
-        r = float(p[0][0])/float(p[0][1])
+            p = re.findall('2000\s+([-.A-Za-z0-9]+)\s+([-.A-Za-z0-9]+)', line)
 
-        self.cost = r
+            try:
+                
+                r = float(p[0][0])/float(p[0][1])
+                self.cost = r
+
+            except IndexError:
+
+                self.cost = -100
+
+        else:
+
+            self.cost = -10
 
         os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code')
 
@@ -292,7 +302,7 @@ class baby_airfoil(airfoil):
        # print('%i-%i'%(self.generation, self.specie))
         #print(self.lPoint)
         LBY = 0.05 # Upper Array
-        UBY = 0.5
+        UBY = 0.25
 
         LBY2 = -0.1 # Lower Array
         UBY2 = 0.15
@@ -305,7 +315,7 @@ class baby_airfoil(airfoil):
         self.uPoint[1][1] = min(self.uPoint[1][1], -0.025)
 
         self.lPoint[1][1] = self.lPoint[1][1] + M*sigma*random.uniform(-1,1)   
-        self.lPoint[1][1] = min(self.lPoint[1][1], 0.3)
+        self.lPoint[1][1] = min(self.lPoint[1][1], 0.25)
         self.lPoint[1][1] = max(self.lPoint[1][1], 0.1)
 
 
