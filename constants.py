@@ -1,10 +1,10 @@
 i=0
-maxIt = 50
-Gen0 = 50
-nPop = 17
+maxIt = 25
+Gen0 = 30
+nPop = 8
 exponent = 2
 sigma_initial = 0.8
 sigma_final = 0.05
 Cmin = 0.5
-Cmax = 6
-M = 0.75
+Cmax = 3
+M = 0.5
