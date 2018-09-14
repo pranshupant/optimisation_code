@@ -24,7 +24,7 @@ class airfoil():
         self.lPoint = np.zeros((5,2))
         self.plotX = []
         self.plotY = []
-        self.cost = 0.000
+        self.cost = 1
 
     def ctrlPoints(self): #Import bspline.py
 
@@ -35,7 +35,7 @@ class airfoil():
         UBY2 = 0.1
 
         LBX = 0.05
-        UBX = 0.85
+        UBX = 0.95
 
         
         self.uPoint[1] = [0, random.uniform(-0.1, -0.025)] # Lower Array
@@ -46,7 +46,7 @@ class airfoil():
                                          (0.4 if (i==2) else UBX))
             self.uPoint[i][1] = random.uniform(LBY2, UBY2)
 
-        self.lPoint[1] = [0, random.uniform(0.05, 0.25)] # Upper Array
+        self.lPoint[1] = [0, random.uniform(0.05, 0.15)] # Upper Array
         self.lPoint[4] = [1, 0]
 
         for i in range(2, 4):
@@ -264,7 +264,7 @@ class airfoil():
         plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
         
         plt.legend(loc='best')
-        plt.axis([min(self.plotX)-0.1, max(self.plotX)+0.1, min(self.plotY)-0.5, max(self.plotY)+0.5])
+        plt.axis([-1, 1, -1, 1])
         plt.title('Cubic B-spline curve evaluation')
         plt.show()
 
@@ -277,7 +277,8 @@ class airfoil():
         plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
         
         plt.legend(loc='best')
-        plt.axis([min(self.plotX)-0.1, max(self.plotX)+0.1, min(self.plotY)-0.5, max(self.plotY)+0.5])
+        plt.axis([0, 1, -0.25, 0.5])
+        plt.axis('equal')
         plt.title('Cubic B-spline curve evaluation')
         plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = "tight")
         #copyfile('airfoil_%i-%i.png', '/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie))
@@ -302,36 +303,36 @@ class baby_airfoil(airfoil):
        # print('%i-%i'%(self.generation, self.specie))
         #print(self.lPoint)
         LBY = 0.05 # Upper Array
-        UBY = 0.25
+        UBY = 0.5
 
         LBY2 = -0.1 # Lower Array
         UBY2 = 0.15
 
         LBX = 0.025
-        UBX = 0.85
+        UBX = 0.95
 
         self.uPoint[1][1] = self.uPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.uPoint[1][1] = max(self.uPoint[1][1], -0.1)
-        self.uPoint[1][1] = min(self.uPoint[1][1], -0.025)
+        self.uPoint[1][1] = min(self.uPoint[1][1], -0.05)
 
         self.lPoint[1][1] = self.lPoint[1][1] + M*sigma*random.uniform(-1,1)   
-        self.lPoint[1][1] = min(self.lPoint[1][1], 0.25)
-        self.lPoint[1][1] = max(self.lPoint[1][1], 0.1)
+        self.lPoint[1][1] = min(self.lPoint[1][1], 0.15)
+        self.lPoint[1][1] = max(self.lPoint[1][1], 0.05)
 
 
         for i in range(2,4):
             self.uPoint[i][0] = self.uPoint[i][0] + M*sigma*random.uniform(-1,1)
-            self.lPoint[i][0] = self.uPoint[i][0] + M*sigma*random.uniform(-1,1)    
+            self.lPoint[i][0] = self.lPoint[i][0] + M*sigma*random.uniform(-1,1)    
       
             self.uPoint[i][0] = min(self.uPoint[i][0], UBX)
-            self.uPoint[i][0] = max(self.uPoint[i][0], self.uPoint[i-1][0]+0.1)
+            self.uPoint[i][0] = max(self.uPoint[i][0], self.uPoint[i-1][0]+0.05)
 
             self.lPoint[i][0] = min(self.lPoint[i][0], UBX)
-            self.lPoint[i][0] = max(self.lPoint[i][0], self.lPoint[i-1][0]+0.1)
+            self.lPoint[i][0] = max(self.lPoint[i][0], self.lPoint[i-1][0]+0.05)
 
         for i in range(2,4):
             self.uPoint[i][1] = self.uPoint[i][1] + M*sigma*random.uniform(-1,1)
-            self.lPoint[i][1] = self.uPoint[i][1] + M*sigma*random.uniform(-1,1)    
+            self.lPoint[i][1] = self.lPoint[i][1] + M*sigma*random.uniform(-1,1)    
 
             self.uPoint[i][1] = min(self.uPoint[i][1], UBY2)
             self.uPoint[i][1] = max(self.uPoint[i][1], LBY2)
