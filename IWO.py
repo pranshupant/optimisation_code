@@ -4,6 +4,7 @@ import subprocess as sp
 import os
 import numpy as np
 from reproduction import reproduction
+from multiprocessing import pool
 
 Airfoil = []
 st = [0]
@@ -29,7 +30,10 @@ if __name__ == "__main__":
 
     while gen < maxIt:
 
-        sigma = (((maxIt - float(i))/maxIt)**exponent)*(sigma_initial - sigma_final) + sigma_final
+        sigma = (((maxIt - float(gen))/maxIt)**exponent)*(sigma_initial - sigma_final) + sigma_final
+
+        print('SIGMA')
+        print(sigma)
 
         Airfoil.sort(key = lambda x: x.cost, reverse = True)
 
@@ -50,8 +54,8 @@ if __name__ == "__main__":
             s[0] += 1 
 
         for k in range(nPop):
-            #parent[k].xFoil()
-            parent[k].cfd()
+            parent[k].xFoil()
+            #parent[k].cfd()
             parent[k].savefig()
 
         for x in range(len(Airfoil)):

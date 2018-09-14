@@ -36,6 +36,6 @@ def reproduction(Airfoil, gen, sigma, i, s):
 
         for j in range(C):
 
-            #progeny[j].xFoil()
-            progeny[j].cfd()
+            progeny[j].xFoil()
+            #progeny[j].cfd()
             Airfoil.append(progeny[j])
