@@ -30,12 +30,12 @@ def firstGen_cost(i):
 
 p = Pool()
 
-Result = p.map(firstGen_cost, range(Gen0))
+pResult = p.map(firstGen_cost, range(Gen0))
 p.close()
 p.join()
 
 for i in range(Gen0):
-    Airfoil[i].cost = Result[i]
+    Airfoil[i].cost = pResult[i]
 
 #print(len(Result))
 #t.sleep(25)
@@ -66,23 +66,37 @@ if __name__ == "__main__":
             s[0] += 1 
 
         for k in range(nPop):
-
+        
             parent[k].xFoil()
             #parent[k].cfd()
             parent[k].savefig()
-            
-        def other_Gens(x):
-            reproduction(Airfoil, gen, sigma, x, s)
 
-        #for x in range(len(Airfoil)):
+        '''def carryGen_cost(i):
+            #Airfoil[i].savefig()
+            parent[i].xFoil()
+            parent[i].savefig()
+            #parent[i].cfd()
+            return parent[i].cost
         
-        q = Pool()
-        q.map(other_Gens, range(len(Airfoil)))
-        q.close()
-        q.join()
-            
-            #reproduction(Airfoil, gen, sigma, x, s)      
+        r = Pool()
+        rResult = r.map(carryGen_cost, range(nPop))
+        r.close()
+        r.join()
 
+        for j in range(nPop):
+            parent[j].cost = pResult[j]'''
+
+        #def other_Gens(x):
+        #    reproduction(Airfoil, gen, sigma, x, s)
+
+        for x in range(len(Airfoil)):
+        
+        #q = Pool(2)
+        #q.map(other_Gens, range(len(Airfoil)))
+        #q.close()
+        #q.join()
+            
+            reproduction(Airfoil, gen, sigma, x, s)      
 
         gen += 1 
         s[0] = 0      
