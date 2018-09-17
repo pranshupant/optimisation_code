@@ -15,7 +15,7 @@ import re
 import os
 import time
 
-class airfoil():
+class airfoil(object):
     def __init__(self, gen, spec):
         
         self.generation = gen
@@ -24,18 +24,18 @@ class airfoil():
         self.lPoint = np.zeros((5,2))
         self.plotX = []
         self.plotY = []
-        self.cost = 1
+        self.cost = 1.000
 
     def ctrlPoints(self): #Import bspline.py
 
         LBY = 0.05 # Upper Array
-        UBY = 0.25
+        UBY = 0.3
 
         LBY2 = -0.1 # Lower Array
         UBY2 = 0.1
 
         LBX = 0.05
-        UBX = 0.95
+        UBX = 0.90
 
         
         self.uPoint[1] = [0, random.uniform(-0.1, -0.025)] # Lower Array
@@ -178,7 +178,7 @@ class airfoil():
 
         t2 = 0
 
-        while t2 < 3:
+        while t2 < 2:
 
             t2 = time.time() - t1
 
@@ -188,7 +188,6 @@ class airfoil():
                     f = open("solution.txt", "r+")
                     for line in f:
                         line = f.read()      
-
                     p = re.findall('\s+[.\d]{5}\s+(-?[.\d]{6})\s+(-?[.\d]{7})', line) 
                 break
 
@@ -206,7 +205,8 @@ class airfoil():
         elif p:
             
             r = float(p[0][0])/float(p[0][1])
-            self.cost = r
+            self.cost = r 
+
 
         os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code')
         
@@ -286,30 +286,28 @@ class airfoil():
         plt.close()
 class baby_airfoil(airfoil):
 
-    def __init__(self, Airfoil, g, s):
+    def __init__(self, parent_airfoil, g, s):
 
         self.generation = g
         self.specie = s
-        self.uPoint = Airfoil.uPoint
-        self.lPoint = Airfoil.lPoint
-        self.plotX = Airfoil.plotX
-        self.plotY = Airfoil.plotY
-        self.cost = Airfoil.cost
-
-
+        self.uPoint = parent_airfoil.uPoint
+        self.lPoint = parent_airfoil.lPoint
+        self.plotX = parent_airfoil.plotX
+        self.plotY = parent_airfoil.plotY
+        self.cost = parent_airfoil.cost
 
     def new(self, sigma):
 
-       # print('%i-%i'%(self.generation, self.specie))
+        #print('%i-%i'%(self.generation, self.specie))
         #print(self.lPoint)
         LBY = 0.05 # Upper Array
-        UBY = 0.5
+        UBY = 0.3
 
         LBY2 = -0.1 # Lower Array
         UBY2 = 0.15
 
         LBX = 0.025
-        UBX = 0.95
+        UBX = 0.90
 
         self.uPoint[1][1] = self.uPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.uPoint[1][1] = max(self.uPoint[1][1], -0.1)
