@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     while gen < maxIt:
 
-        sigma = (((maxIt - float(gen))/maxIt)**exponent)*(sigma_initial - sigma_final) + sigma_final
+        sigma = (((maxIt - float(gen-1))/maxIt)**exponent)*(sigma_initial - sigma_final) + sigma_final
 
         print('SIGMA')
         print(sigma)
