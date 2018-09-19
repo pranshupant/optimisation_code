@@ -15,12 +15,12 @@ import re
 import os
 import time
 
-class airfoil(object):
+class airfoil:
     def __init__(self, gen, spec):
         
-        self.generation = gen
-        self.specie = spec
-        self.uPoint = np.zeros((5,2))
+        self.__generation = gen
+        self.__specie = spec
+        self.__uPoint = np.zeros((5,2))
         self.lPoint = np.zeros((5,2))
         self.plotX = []
         self.plotY = []
@@ -35,16 +35,16 @@ class airfoil(object):
         UBY2 = 0.1
 
         LBX = 0.05
-        UBX = 0.90
+        UBX = 0.85
 
         
-        self.uPoint[1] = [0, random.uniform(-0.1, -0.025)] # Lower Array
-        self.uPoint[4] = [1, 0]
+        self.__uPoint[1] = [0, random.uniform(-0.1, -0.025)] # Lower Array
+        self.__uPoint[4] = [1, 0]
 
         for i in range(2, 4):
-            self.uPoint[i][0] = random.uniform((LBX if (i==2) else self.uPoint[2][0]+0.1),
+            self.__uPoint[i][0] = random.uniform((LBX if (i==2) else self.__uPoint[2][0]+0.1),
                                          (0.4 if (i==2) else UBX))
-            self.uPoint[i][1] = random.uniform(LBY2, UBY2)
+            self.__uPoint[i][1] = random.uniform(LBY2, UBY2)
 
         self.lPoint[1] = [0, random.uniform(0.05, 0.15)] # Upper Array
         self.lPoint[4] = [1, 0]
@@ -52,15 +52,15 @@ class airfoil(object):
         for i in range(2, 4):
             self.lPoint[i][0] = random.uniform((LBX if (i==2) else self.lPoint[2][0]+0.1),
                                          (0.4 if (i==2) else UBX))
-            self.lPoint[i][1] = random.uniform(LBY if (LBY>self.uPoint[i][1]) 
-                                             else self.uPoint[i][1]+0.1, UBY)
+            self.lPoint[i][1] = random.uniform(LBY if (LBY>self.__uPoint[i][1]) 
+                                             else self.__uPoint[i][1]+0.1, UBY)
 
-        #print(self.uPoint)
+        #print(self.__uPoint)
         #print(self.lPoint)
     def bspline(self):
         # Split into new function
         ctr = np.array(self.lPoint)
-        ltr = np.array(self.uPoint)
+        ltr = np.array(self.__uPoint)
 
         x = ctr[:,0]
         y = ctr[:,1]
@@ -100,15 +100,15 @@ class airfoil(object):
 
     def write(self):
 
-        #print(self.generation)
-        #print(self.specie)
+        #print(self.__generation)
+        #print(self.__specie)
 
-        if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))):
-            os.makedirs("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i" %(self.generation,self.specie))
+        if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(self.__generation,self.__specie))):
+            os.makedirs("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i" %(self.__generation,self.__specie))
             
-        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(self.generation,self.specie,self.generation,self.specie),"w+")
+        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(self.__generation,self.__specie,self.__generation,self.__specie),"w+")
 
-        f.write("Airfoil_%i-%i"%(self.generation,self.specie))
+        f.write("Airfoil_%i-%i"%(self.__generation,self.__specie))
         f.write("\n")
 
         for i in range(len(self.plotX)):
@@ -118,22 +118,22 @@ class airfoil(object):
             f.write("\n")
         f.close()
 
-        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(self.generation,self.specie,self.generation,self.specie),"w+")
+        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(self.__generation,self.__specie,self.__generation,self.__specie),"w+")
 
         for i in range(5):
-            f.write(str(self.uPoint[i]).strip('[]'))
+            f.write(str(self.__uPoint[i]).strip('[]'))
             f.write('\n')
         for i in range(5):
             f.write(str(self.lPoint[i]).strip('[]'))
             f.write('\n')
         f.close()
 
-        if(not os.path.isdir("Results_CFD/Generation_%i/Specie_%i" %(self.generation,self.specie))):
-            os.makedirs("Results_CFD/Generation_%i/Specie_%i" %(self.generation,self.specie))
+        if(not os.path.isdir("Results_CFD/Generation_%i/Specie_%i" %(self.__generation,self.__specie))):
+            os.makedirs("Results_CFD/Generation_%i/Specie_%i" %(self.__generation,self.__specie))
 
-        f = open('Results_CFD/Generation_%i/Specie_%i/plot_Airfoil_%i-%i'%(self.generation,self.specie,self.generation,self.specie),"w+")
+        f = open('Results_CFD/Generation_%i/Specie_%i/plot_Airfoil_%i-%i'%(self.__generation,self.__specie,self.__generation,self.__specie),"w+")
 
-        f.write("Airfoil_%i-%i"%(self.generation,self.specie))
+        f.write("Airfoil_%i-%i"%(self.__generation,self.__specie))
         f.write("\n")
 
         for i in range(len(self.plotX)):
@@ -143,10 +143,10 @@ class airfoil(object):
             f.write('\n')
         f.close()
 
-        f = open('Results_CFD/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i'%(self.generation,self.specie,self.generation,self.specie),"w+")
+        f = open('Results_CFD/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i'%(self.__generation,self.__specie,self.__generation,self.__specie),"w+")
 
         for i in range(5):
-            f.write(str(self.uPoint[i]).strip('[]'))
+            f.write(str(self.__uPoint[i]).strip('[]'))
             f.write('\n')
         for i in range(5):
             f.write(str(self.lPoint[i]).strip('[]'))
@@ -157,10 +157,10 @@ class airfoil(object):
     def xFoil(self): 
         
         #Extraction of L/d done
-        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i'%(self.generation,self.specie))
+        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i'%(self.__generation,self.__specie))
         print(os.getcwd())
 
-        copyfile("plot_Airfoil_%i-%i" %(self.generation,self.specie), "Airfoil.txt")
+        copyfile("plot_Airfoil_%i-%i" %(self.__generation,self.__specie), "Airfoil.txt")
         copyfile("../../../controlfile.xfoil", "controlfile.xfoil")
 
         #t1 = time.time()
@@ -213,14 +213,14 @@ class airfoil(object):
 
     def cfd(self):  #Extract result from post processing
 
-        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i'%(self.generation,self.specie))
+        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i'%(self.__generation,self.__specie))
         #os.mkdir('CFD')
 
         copytree('/home/pranshu/Desktop/openFoam/IWO_CFD_orig', 'CFD')
                
         os.chdir('CFD')
 
-        STL_Gen(self.plotX,self.plotY,self.generation,self.specie)
+        STL_Gen(self.plotX,self.plotY,self.__generation,self.__specie)
 
 
         print(os.getcwd())
@@ -251,26 +251,97 @@ class airfoil(object):
         os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code')
 
 
-    def reproduce(self):
+    def copy(self, g, s):
+        
+        if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(g,s))):
+            os.makedirs("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i" %(g,s))
+            
+        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(g,s,g,s),"w+")
 
-        print("1")
+        f.write("Airfoil_%i-%i"%(g,s))
+        f.write("\n")
 
-    def show(self):   #display using matplotlib
+        for i in range(len(self.plotX)):
+            f.write(str(self.plotX[i]))
+            f.write(" ")
+            f.write(str(self.plotY[i]))
+            f.write("\n")
+        f.close()
 
-        plt.plot(self.uPoint[:,0], self.uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
+        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(g,s,g,s),"w+")
+
+        for i in range(5):
+            f.write(str(self.__uPoint[i]).strip('[]'))
+            f.write('\n')
+        for i in range(5):
+            f.write(str(self.lPoint[i]).strip('[]'))
+            f.write('\n')
+        f.close()
+
+        if(not os.path.isdir("Results_CFD/Generation_%i/Specie_%i" %(g,s))):
+            os.makedirs("Results_CFD/Generation_%i/Specie_%i" %(g,s))
+
+        f = open('Results_CFD/Generation_%i/Specie_%i/plot_Airfoil_%i-%i'%(g,s,g,s),"w+")
+
+        f.write("Airfoil_%i-%i"%(g,s))
+        f.write("\n")
+
+        for i in range(len(self.plotX)):
+            f.write(str(self.plotX[i]))
+            f.write(' ')
+            f.write(str(self.plotY[i]))
+            f.write('\n')
+        f.close()
+
+        f = open('Results_CFD/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i'%(g,s,g,s),"w+")
+
+        for i in range(5):
+            f.write(str(self.__uPoint[i]).strip('[]'))
+            f.write('\n')
+        for i in range(5):
+            f.write(str(self.lPoint[i]).strip('[]'))
+            f.write('\n')
+        f.close()
+
+        # Write code for copying airfoil solution data from previous __generation to new __generation
+    def copy_Results(self, g, s):
+        
+        #os.chdir()
+        try:
+            copyfile('Results_XFoil/Generation_%i/Specie_%i/plot.ps'%(self.__generation, self.__specie), 'Results_XFoil/Generation_%i/Specie_%i/plot.ps'%(g, s))
+            
+        except FileNotFoundError:
+            print('File to be copied is missing')
+        
+        try:
+            copyfile('Results_XFoil/Generation_%i/Specie_%i/solution.txt'%(self.__generation, self.__specie), 'Results_XFoil/Generation_%i/Specie_%i/solution_copy.txt'%(g, s))
+
+        except FileNotFoundError:
+            print('File to be copied is missing')
+
+
+
+    def show(self, g, s):   #display using matplotlib
+
+        plt.plot(self.__uPoint[:,0], self.__uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
        
         plt.plot(self.lPoint[:,0],self.lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
        
         plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
         
         plt.legend(loc='best')
-        plt.axis([-1, 1, -1, 1])
-        plt.title('Cubic B-spline curve evaluation')
-        plt.show()
+        plt.axis([0, 1, -0.25, 0.5])
+        plt.axis('equal')
+        plt.title('Cubic B-spline curve evaluation%i--%i'%(self.__generation, self.__specie))
+        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Plots/airfoil_%i-%i.png'%(g,s))
+        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(g, s, g, s), bbox_inches = 'tight')
+
+        #plt.show()
+        plt.close()
 
     def savefig(self):   #display using matplotlib
 
-        plt.plot(self.uPoint[:,0], self.uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
+        plt.plot(self.__uPoint[:,0], self.__uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
        
         plt.plot(self.lPoint[:,0],self.lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
        
@@ -280,38 +351,40 @@ class airfoil(object):
         plt.axis([0, 1, -0.25, 0.5])
         plt.axis('equal')
         plt.title('Cubic B-spline curve evaluation')
-        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = "tight")
-        #copyfile('airfoil_%i-%i.png', '/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie))
-        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.generation,self.specie,self.generation,self.specie), bbox_inches = 'tight')
+        #plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.__generation,self.__specie,self.__generation,self.__specie), bbox_inches = "tight")
+        #copyfile('airfoil_%i-%i.png', '/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.__generation,self.__specie,self.__generation,self.__specie))
+        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.__generation,self.__specie,self.__generation,self.__specie), bbox_inches = 'tight')
         plt.close()
-class baby_airfoil(airfoil):
 
-    def __init__(self, parent_airfoil, g, s):
+#class baby_airfoil(airfoil):
 
-        self.generation = g
-        self.specie = s
-        self.uPoint = parent_airfoil.uPoint
+    def copy_mutate(self, g, s):
+
+        self.__generation = g
+        self.__specie = s
+        '''self.__uPoint = parent_airfoil.__uPoint
         self.lPoint = parent_airfoil.lPoint
         self.plotX = parent_airfoil.plotX
         self.plotY = parent_airfoil.plotY
-        self.cost = parent_airfoil.cost
+        self.cost = parent_airfoil.cost'''
 
     def new(self, sigma):
 
-        #print('%i-%i'%(self.generation, self.specie))
+        print("MUTATION")
+        print('%i-%i'%(self.__generation, self.__specie))
         #print(self.lPoint)
         LBY = 0.05 # Upper Array
         UBY = 0.3
 
         LBY2 = -0.1 # Lower Array
-        UBY2 = 0.15
+        UBY2 = 0.10
 
         LBX = 0.025
-        UBX = 0.90
+        UBX = 0.85
 
-        self.uPoint[1][1] = self.uPoint[1][1] + M*sigma*random.uniform(-1,1)   
-        self.uPoint[1][1] = max(self.uPoint[1][1], -0.1)
-        self.uPoint[1][1] = min(self.uPoint[1][1], -0.05)
+        self.__uPoint[1][1] = self.__uPoint[1][1] + M*sigma*random.uniform(-1,1)   
+        self.__uPoint[1][1] = max(self.__uPoint[1][1], -0.1)
+        self.__uPoint[1][1] = min(self.__uPoint[1][1], -0.05)
 
         self.lPoint[1][1] = self.lPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.lPoint[1][1] = min(self.lPoint[1][1], 0.15)
@@ -319,22 +392,25 @@ class baby_airfoil(airfoil):
 
 
         for i in range(2,4):
-            self.uPoint[i][0] = self.uPoint[i][0] + M*sigma*random.uniform(-1,1)
+            self.__uPoint[i][0] = self.__uPoint[i][0] + M*sigma*random.uniform(-1,1)
             self.lPoint[i][0] = self.lPoint[i][0] + M*sigma*random.uniform(-1,1)    
       
-            self.uPoint[i][0] = min(self.uPoint[i][0], UBX)
-            self.uPoint[i][0] = max(self.uPoint[i][0], self.uPoint[i-1][0]+0.05)
+            self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
+            self.__uPoint[i][0] = max(self.__uPoint[i][0], self.__uPoint[i-1][0]+0.1)
+            self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
 
             self.lPoint[i][0] = min(self.lPoint[i][0], UBX)
-            self.lPoint[i][0] = max(self.lPoint[i][0], self.lPoint[i-1][0]+0.05)
+            self.lPoint[i][0] = max(self.lPoint[i][0], self.lPoint[i-1][0]+0.1)
+            self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
 
         for i in range(2,4):
-            self.uPoint[i][1] = self.uPoint[i][1] + M*sigma*random.uniform(-1,1)
+            self.__uPoint[i][1] = self.__uPoint[i][1] + M*sigma*random.uniform(-1,1)
             self.lPoint[i][1] = self.lPoint[i][1] + M*sigma*random.uniform(-1,1)    
 
-            self.uPoint[i][1] = min(self.uPoint[i][1], UBY2)
-            self.uPoint[i][1] = max(self.uPoint[i][1], LBY2)
+            self.__uPoint[i][1] = min(self.__uPoint[i][1], UBY2)
+            self.__uPoint[i][1] = max(self.__uPoint[i][1], LBY2)
 
             self.lPoint[i][1] = min(self.lPoint[i][1], UBY)
-            self.lPoint[i][1] = max(self.lPoint[i][1], self.uPoint[i][1]+0.1)
+            self.lPoint[i][1] = max(self.lPoint[i][1], self.__uPoint[i][1]+0.1)
+            self.lPoint[i][1] = max(self.lPoint[i][1], self.__uPoint[i-1][1]+0.1)
 
