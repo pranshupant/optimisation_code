@@ -1,6 +1,6 @@
 i=0
-maxIt = 25
-Gen0 = 75
+maxIt = 50
+Gen0 = 100
 nPop = 15
 exponent = 2
 sigma_initial = 0.8
