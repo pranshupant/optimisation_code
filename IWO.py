@@ -1,5 +1,5 @@
 from constants import maxIt, Gen0, sigma_final, sigma_initial, exponent, nPop
-from airfoil_Class import airfoil, baby_airfoil
+from airfoil_Class import airfoil#, baby_airfoil
 import subprocess as sp
 import os
 import numpy as np
@@ -9,6 +9,8 @@ from multiprocessing import pool
 Airfoil = []
 st = [0]
 s = np.array(st)
+gen = 0
+
 
 for i in range(Gen0):
     
@@ -17,6 +19,7 @@ for i in range(Gen0):
     Airfoil[i].bspline()
     Airfoil[i].write()
     Airfoil[i].savefig()
+    Airfoil[i].show(gen, i)
 
 for i in range(Gen0):
     #Airfoil[i].savefig()
@@ -34,33 +37,32 @@ if __name__ == "__main__":
 
         print('SIGMA')
         print(sigma)
-
-        Airfoil.sort(key = lambda x: x.cost, reverse = True)
+        
+        Airfoil.sort(key = lambda Airfoil: Airfoil.cost, reverse = True)
 
         for i in range(len(Airfoil)):
             print(Airfoil[i].cost)
 
         del Airfoil[nPop:]
+               
 
         for i in range(len(Airfoil)):
             print(Airfoil[i].cost)
-
-        parent = []
+                              
+        #parent = []
     
         for k in range(nPop):
-            parent.append(baby_airfoil(Airfoil[k], gen, s[0]))
-            parent[k].write()
-
+            Airfoil[k].copy(gen, s[0])
+            #parent.append(Airfoil[k])
+            Airfoil[k].copy_Results(gen, s[0])
+            Airfoil[k].show(gen, s[0])
             s[0] += 1 
 
-        for k in range(nPop):
-            parent[k].xFoil()
-            #parent[k].cfd()
-            parent[k].savefig()
-
+                
         for x in range(len(Airfoil)):
-            reproduction(Airfoil, gen, sigma, x, s)      
+            reproduction(Airfoil, gen, sigma, x, s)    
 
-
+        Airfoil.sort(key = lambda x: x.cost, reverse = True)
+                
         gen += 1 
         s[0] = 0      
