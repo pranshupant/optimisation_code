@@ -14,6 +14,7 @@ import string
 import re
 import os
 import time
+import copy
 
 class airfoil:
     def __init__(self, gen, spec):
@@ -21,9 +22,12 @@ class airfoil:
         self.__generation = gen
         self.__specie = spec
         self.__uPoint = np.zeros((5,2))
-        self.lPoint = np.zeros((5,2))
+        self.__lPoint = np.zeros((5,2))
         self.plotX = []
         self.plotY = []
+        self.c_Lower = np.zeros(69)
+        self.c_Upper = np.zeros(69)   
+        self.c_X = np.zeros(69) 
         self.cost = 1.000
 
     def ctrlPoints(self): #Import bspline.py
@@ -46,20 +50,20 @@ class airfoil:
                                          (0.4 if (i==2) else UBX))
             self.__uPoint[i][1] = random.uniform(LBY2, UBY2)
 
-        self.lPoint[1] = [0, random.uniform(0.05, 0.15)] # Upper Array
-        self.lPoint[4] = [1, 0]
+        self.__lPoint[1] = [0, random.uniform(0.05, 0.15)] # Upper Array
+        self.__lPoint[4] = [1, 0]
 
         for i in range(2, 4):
-            self.lPoint[i][0] = random.uniform((LBX if (i==2) else self.lPoint[2][0]+0.1),
+            self.__lPoint[i][0] = random.uniform((LBX if (i==2) else self.__lPoint[2][0]+0.1),
                                          (0.4 if (i==2) else UBX))
-            self.lPoint[i][1] = random.uniform(LBY if (LBY>self.__uPoint[i][1]) 
+            self.__lPoint[i][1] = random.uniform(LBY if (LBY>self.__uPoint[i][1]) 
                                              else self.__uPoint[i][1]+0.1, UBY)
 
         #print(self.__uPoint)
-        #print(self.lPoint)
+        #print(self.__lPoint)
     def bspline(self):
         # Split into new function
-        ctr = np.array(self.lPoint)
+        ctr = np.array(self.__lPoint)
         ltr = np.array(self.__uPoint)
 
         x = ctr[:,0]
@@ -81,14 +85,25 @@ class airfoil:
         out1 = interpolate.splev(u3,lck) 
         
         X1=np.array(out[0])
+        c_X = copy.deepcopy(X1)
+        self.c_X = c_X[1:69]
+
         X2=np.array(out1[0])
         X3=X1[: : -1]
 
         X=np.concatenate((X3,X2), 0)
-        self.plotX = X
+        self.plotX = X     
 
         Y1=np.array(out[1])
+        cY1 = copy.deepcopy(Y1)
+        self.c_Upper = cY1[1:69]
+
+
         Y2=np.array(out1[1])
+        cY2 = copy.deepcopy(Y2)
+        self.c_Lower = cY2[1:69]
+
+
         Y3=Y1[: : -1]
 
         Y=np.concatenate((Y3,Y2), 0)
@@ -124,7 +139,7 @@ class airfoil:
             f.write(str(self.__uPoint[i]).strip('[]'))
             f.write('\n')
         for i in range(5):
-            f.write(str(self.lPoint[i]).strip('[]'))
+            f.write(str(self.__lPoint[i]).strip('[]'))
             f.write('\n')
         f.close()
 
@@ -149,7 +164,7 @@ class airfoil:
             f.write(str(self.__uPoint[i]).strip('[]'))
             f.write('\n')
         for i in range(5):
-            f.write(str(self.lPoint[i]).strip('[]'))
+            f.write(str(self.__lPoint[i]).strip('[]'))
             f.write('\n')
         f.close()
               
@@ -274,7 +289,7 @@ class airfoil:
             f.write(str(self.__uPoint[i]).strip('[]'))
             f.write('\n')
         for i in range(5):
-            f.write(str(self.lPoint[i]).strip('[]'))
+            f.write(str(self.__lPoint[i]).strip('[]'))
             f.write('\n')
         f.close()
 
@@ -299,7 +314,7 @@ class airfoil:
             f.write(str(self.__uPoint[i]).strip('[]'))
             f.write('\n')
         for i in range(5):
-            f.write(str(self.lPoint[i]).strip('[]'))
+            f.write(str(self.__lPoint[i]).strip('[]'))
             f.write('\n')
         f.close()
 
@@ -325,7 +340,7 @@ class airfoil:
 
         plt.plot(self.__uPoint[:,0], self.__uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
        
-        plt.plot(self.lPoint[:,0],self.lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
+        plt.plot(self.__lPoint[:,0],self.__lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
        
         plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
         
@@ -343,7 +358,7 @@ class airfoil:
 
         plt.plot(self.__uPoint[:,0], self.__uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='red')
        
-        plt.plot(self.lPoint[:,0],self.lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
+        plt.plot(self.__lPoint[:,0],self.__lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
        
         plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
         
@@ -362,17 +377,12 @@ class airfoil:
 
         self.__generation = g
         self.__specie = s
-        '''self.__uPoint = parent_airfoil.__uPoint
-        self.lPoint = parent_airfoil.lPoint
-        self.plotX = parent_airfoil.plotX
-        self.plotY = parent_airfoil.plotY
-        self.cost = parent_airfoil.cost'''
 
     def new(self, sigma):
 
         print("MUTATION")
         print('%i-%i'%(self.__generation, self.__specie))
-        #print(self.lPoint)
+    
         LBY = 0.05 # Upper Array
         UBY = 0.3
 
@@ -386,31 +396,44 @@ class airfoil:
         self.__uPoint[1][1] = max(self.__uPoint[1][1], -0.1)
         self.__uPoint[1][1] = min(self.__uPoint[1][1], -0.05)
 
-        self.lPoint[1][1] = self.lPoint[1][1] + M*sigma*random.uniform(-1,1)   
-        self.lPoint[1][1] = min(self.lPoint[1][1], 0.15)
-        self.lPoint[1][1] = max(self.lPoint[1][1], 0.05)
+        self.__lPoint[1][1] = self.__lPoint[1][1] + M*sigma*random.uniform(-1,1)   
+        self.__lPoint[1][1] = min(self.__lPoint[1][1], 0.15)
+        self.__lPoint[1][1] = max(self.__lPoint[1][1], 0.05)
 
 
         for i in range(2,4):
             self.__uPoint[i][0] = self.__uPoint[i][0] + M*sigma*random.uniform(-1,1)
-            self.lPoint[i][0] = self.lPoint[i][0] + M*sigma*random.uniform(-1,1)    
+            self.__lPoint[i][0] = self.__lPoint[i][0] + M*sigma*random.uniform(-1,1)    
       
             self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
             self.__uPoint[i][0] = max(self.__uPoint[i][0], self.__uPoint[i-1][0]+0.1)
             self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
 
-            self.lPoint[i][0] = min(self.lPoint[i][0], UBX)
-            self.lPoint[i][0] = max(self.lPoint[i][0], self.lPoint[i-1][0]+0.1)
+            self.__lPoint[i][0] = min(self.__lPoint[i][0], UBX)
+            self.__lPoint[i][0] = max(self.__lPoint[i][0], self.__lPoint[i-1][0]+0.1)
             self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
 
         for i in range(2,4):
             self.__uPoint[i][1] = self.__uPoint[i][1] + M*sigma*random.uniform(-1,1)
-            self.lPoint[i][1] = self.lPoint[i][1] + M*sigma*random.uniform(-1,1)    
+            self.__lPoint[i][1] = self.__lPoint[i][1] + M*sigma*random.uniform(-1,1)    
 
             self.__uPoint[i][1] = min(self.__uPoint[i][1], UBY2)
             self.__uPoint[i][1] = max(self.__uPoint[i][1], LBY2)
 
-            self.lPoint[i][1] = min(self.lPoint[i][1], UBY)
-            self.lPoint[i][1] = max(self.lPoint[i][1], self.__uPoint[i][1]+0.1)
-            self.lPoint[i][1] = max(self.lPoint[i][1], self.__uPoint[i-1][1]+0.1)
+            self.__lPoint[i][1] = min(self.__lPoint[i][1], UBY)
+            self.__lPoint[i][1] = max(self.__lPoint[i][1], self.__uPoint[i][1]+0.1)
+            self.__lPoint[i][1] = max(self.__lPoint[i][1], self.__uPoint[i-1][1]+0.1)
 
+    def camber(self, g, s):
+        M = np.zeros(69)
+        M = (self.c_Upper+self.c_Lower)/2
+
+        #for i in range(69):
+        max_C = max(M)*100
+
+        plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
+        plt.plot(self.c_X, M,'b',linewidth=1.0,color='red',label='Camber curve %i' % max_C)
+        plt.legend(loc='best')
+        plt.axis([0, 1, -0.25, 0.5])
+        plt.axis('equal')
+        plt.savefig('Camber/airfoil_%i-%i.png'%(g,s))
