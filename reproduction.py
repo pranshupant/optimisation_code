@@ -26,7 +26,6 @@ def reproduction(Airfoil, gen, sigma, x, s):
         for j in range(C):
             
             p = copy.deepcopy(Airfoil[x])
-            #print(Airfoil[x].lPoint)
             p.copy_mutate(gen, s[0])
             progeny.append(p)
 
@@ -35,6 +34,8 @@ def reproduction(Airfoil, gen, sigma, x, s):
             progeny[j].write()
             progeny[j].savefig()
             progeny[j].show(gen, s[0])
+            progeny[j].camber(gen, s[0])
+
                                  
             s[0] += 1
 
@@ -44,8 +45,3 @@ def reproduction(Airfoil, gen, sigma, x, s):
             print(progeny[j].cost)
             #progeny[j].cfd()
             Airfoil.append(progeny[j])
-
-        #for t in range(len(Airfoil)):
-        #print('after reproduction')
-        #print(len(Airfoil))
-        #print()
