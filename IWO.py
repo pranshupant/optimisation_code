@@ -20,6 +20,8 @@ for i in range(Gen0):
     Airfoil[i].write()
     Airfoil[i].savefig()
     Airfoil[i].show(gen, i)
+    Airfoil[i].camber(gen, i)
+
 
 for i in range(Gen0):
     #Airfoil[i].savefig()
@@ -48,14 +50,12 @@ if __name__ == "__main__":
 
         for i in range(len(Airfoil)):
             print(Airfoil[i].cost)
-                              
-        #parent = []
     
         for k in range(nPop):
             Airfoil[k].copy(gen, s[0])
-            #parent.append(Airfoil[k])
             Airfoil[k].copy_Results(gen, s[0])
             Airfoil[k].show(gen, s[0])
+            Airfoil[k].camber(gen, s[0])
             s[0] += 1 
 
                 
