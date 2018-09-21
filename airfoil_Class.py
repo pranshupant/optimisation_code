@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import interpolate
-from constants import M
+from constants import *
 import matplotlib.pyplot as plt
 import random
 import stl
@@ -119,9 +119,9 @@ class airfoil:
         #print(self.__specie)
 
         if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(self.__generation,self.__specie))):
-            os.makedirs("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i" %(self.__generation,self.__specie))
+            os.makedirs("Results_XFoil/Generation_%i/Specie_%i" %(self.__generation,self.__specie))
             
-        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(self.__generation,self.__specie,self.__generation,self.__specie),"w+")
+        f = open("Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(self.__generation,self.__specie,self.__generation,self.__specie),"w+")
 
         f.write("Airfoil_%i-%i"%(self.__generation,self.__specie))
         f.write("\n")
@@ -133,7 +133,7 @@ class airfoil:
             f.write("\n")
         f.close()
 
-        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(self.__generation,self.__specie,self.__generation,self.__specie),"w+")
+        f = open("Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(self.__generation,self.__specie,self.__generation,self.__specie),"w+")
 
         for i in range(5):
             f.write(str(self.__uPoint[i]).strip('[]'))
@@ -172,7 +172,7 @@ class airfoil:
     def xFoil(self): 
         
         #Extraction of L/d done
-        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i'%(self.__generation,self.__specie))
+        os.chdir('Results_XFoil/Generation_%i/Specie_%i'%(self.__generation,self.__specie))
         print(os.getcwd())
 
         copyfile("plot_Airfoil_%i-%i" %(self.__generation,self.__specie), "Airfoil.txt")
@@ -203,7 +203,7 @@ class airfoil:
                     f = open("solution.txt", "r+")
                     for line in f:
                         line = f.read()      
-                    p = re.findall('\s+[.\d]{5}\s+(-?[.\d]{6})\s+(-?[.\d]{7})', line) 
+                    p = re.findall(r'\s+[.\d]{5}\s+(-?[.\d]{6})\s+(-?[.\d]{7})', line) 
                 break
 
             else:
@@ -248,7 +248,7 @@ class airfoil:
             for line in f:
                  line = f.read()
 
-            p = re.findall('2000\s+([-.A-Za-z0-9]+)\s+([-.A-Za-z0-9]+)', line)
+            p = re.findall(r'2000\s+([-.A-Za-z0-9]+)\s+([-.A-Za-z0-9]+)', line)
 
             try:
                 
@@ -271,7 +271,7 @@ class airfoil:
         if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(g,s))):
             os.makedirs("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i" %(g,s))
             
-        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(g,s,g,s),"w+")
+        f = open("Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(g,s,g,s),"w+")
 
         f.write("Airfoil_%i-%i"%(g,s))
         f.write("\n")
@@ -283,7 +283,7 @@ class airfoil:
             f.write("\n")
         f.close()
 
-        f = open("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(g,s,g,s),"w+")
+        f = open("Results_XFoil/Generation_%i/Specie_%i/Genes_Airfoil_%i-%i" %(g,s,g,s),"w+")
 
         for i in range(5):
             f.write(str(self.__uPoint[i]).strip('[]'))
@@ -348,8 +348,8 @@ class airfoil:
         plt.axis([0, 1, -0.25, 0.5])
         plt.axis('equal')
         plt.title('Cubic B-spline curve evaluation%i--%i'%(self.__generation, self.__specie))
-        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Plots/airfoil_%i-%i.png'%(g,s))
-        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(g, s, g, s), bbox_inches = 'tight')
+        plt.savefig(plotsDirectory%(g,s))
+        plt.savefig(xFoil_image%(g, s, g, s), bbox_inches = 'tight')
 
         #plt.show()
         plt.close()
@@ -368,7 +368,7 @@ class airfoil:
         plt.title('Cubic B-spline curve evaluation')
         #plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.__generation,self.__specie,self.__generation,self.__specie), bbox_inches = "tight")
         #copyfile('airfoil_%i-%i.png', '/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.__generation,self.__specie,self.__generation,self.__specie))
-        plt.savefig('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i/airfoil_%i-%i.png'%(self.__generation,self.__specie,self.__generation,self.__specie), bbox_inches = 'tight')
+        plt.savefig(xFoil_image%(self.__generation,self.__specie,self.__generation,self.__specie), bbox_inches = 'tight')
         plt.close()
 
 #class baby_airfoil(airfoil):
@@ -429,11 +429,11 @@ class airfoil:
         M = (self.c_Upper+self.c_Lower)/2
 
         #for i in range(69):
-        max_C = max(M)*100
+        max_C = max(M)*100.00
 
         plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
-        plt.plot(self.c_X, M,'b',linewidth=1.0,color='red',label='Camber curve %i' % max_C)
+        plt.plot(self.c_X, M,'b',linewidth=1.0,color='red',label='Camber curve %.2f' % max_C)
         plt.legend(loc='best')
         plt.axis([0, 1, -0.25, 0.5])
         plt.axis('equal')
-        plt.savefig('Camber/airfoil_%i-%i.png'%(g,s))
+        plt.savefig(camberDirectory%(g,s))
