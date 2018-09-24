@@ -28,7 +28,9 @@ class airfoil:
         self.c_Lower = np.zeros(69)
         self.c_Upper = np.zeros(69)   
         self.c_X = np.zeros(69) 
-        self.cost = 1.000
+        self.cost = 1.00
+        self.rank = 0.00
+        self.max_Camber = 0.00
 
     def ctrlPoints(self): #Import bspline.py
 
@@ -430,6 +432,7 @@ class airfoil:
 
         #for i in range(69):
         max_C = max(M)*100.00
+        self.max_Camber = max_C
 
         plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
         plt.plot(self.c_X, M,'b',linewidth=1.0,color='red',label='Camber curve %.2f' % max_C)
@@ -437,3 +440,4 @@ class airfoil:
         plt.axis([0, 1, -0.25, 0.5])
         plt.axis('equal')
         plt.savefig(camberDirectory%(g,s))
+        plt.close()
