@@ -53,9 +53,7 @@ def fast_non_dominated_sort(V1, V2):
         F.append(Q)
 
     del F[len(F)-1]
-    #print('^^^^^^^')
-    #print(F)
-    #print('^^^^^^^')
+    
     return F
 
 def crowding_distance(V1, V2, F):
