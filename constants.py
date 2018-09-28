@@ -1,12 +1,12 @@
 i=0
 maxIt = 50
 Gen0 = 100
-nPop = 15
+nPop = 25
 exponent = 2
 sigma_initial = 1.0
 sigma_final = 0.001
-Cmin = 0.5
-Cmax = 6
+Cmin = 0
+Cmax = 3
 M = 0.5
 
 camberDirectory = 'Camber/airfoil_%i-%i.png'
