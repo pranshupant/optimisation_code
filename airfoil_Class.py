@@ -212,14 +212,14 @@ class airfoil:
 
                 p.append([-10.00,1.00])
                 # print("File not found")
-                self.max_Camber = 25.00
+                #self.max_Camber = 25.00
           
 
         if not p:
 
             r = -10.00
             self.cost = r
-            self.max_Camber = 25.00
+            #self.max_Camber = 25.00
 
         elif p:
             
