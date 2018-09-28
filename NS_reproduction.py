@@ -25,12 +25,12 @@ def Rank_Assign(Airfoil, Cost0, Cost1):
     	    	break
         if (len(Rank_List) == len(Airfoil)):
     	    break
-    Sorted_Airfoil = []
+    #Sorted_Airfoil = []
     for i in range(len(Airfoil)):
-    	#Airfoil[i].rank = Rank_List[i] 
-        Sorted_Airfoil.append(Airfoil[Rank_List[i]])
+    	Airfoil[Rank_List[i]].rank = i
+        #Sorted_Airfoil.append(Airfoil[Rank_List[i]])
 
-    return Sorted_Airfoil
+    #return Rank_List
 
 def reproduction(Airfoil, gen, sigma, x, s):  
                      

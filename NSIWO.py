@@ -54,9 +54,9 @@ if __name__ == "__main__":
         plt.savefig('Pics/%i.svg'%(gen))
         #plt.close() 
 
-        nsga_Airfoil = copy.deepcopy(Airfoil)
+        #nsga_Airfoil = copy.deepcopy(Airfoil)
         
-        Airfoil = Rank_Assign(nsga_Airfoil, Cost0, Cost1)
+        Rank_Assign(Airfoil, Cost0, Cost1)
         
         sigma = (((maxIt - float(gen-1))/maxIt)**exponent)*(sigma_initial - sigma_final) + sigma_final
 
