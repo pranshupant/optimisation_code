@@ -28,9 +28,9 @@ class airfoil:
         self.c_Lower = np.zeros(69)
         self.c_Upper = np.zeros(69)   
         self.c_X = np.zeros(69) 
-        self.cost = 1.00
+        self.cost = -10.00
         self.rank = 0.00
-        self.max_Camber = 0.00
+        self.max_Camber = 25.00
 
     def ctrlPoints(self): #Import bspline.py
 
@@ -210,14 +210,16 @@ class airfoil:
 
             else:
 
-                p.append([1,1])
-               # print("File not found")
+                p.append([-10.00,1.00])
+                # print("File not found")
+                self.max_Camber = 25.00
           
 
         if not p:
 
-            r = 1
+            r = -10.00
             self.cost = r
+            self.max_Camber = 25.00
 
         elif p:
             
@@ -441,3 +443,11 @@ class airfoil:
         plt.axis('equal')
         plt.savefig(camberDirectory%(g,s))
         plt.close()
+    
+    def random(self):
+        self.max_Camber = random.uniform(0,20)
+        self.cost = random.uniform(0,200)
+
+    def mutate(self, sigma):
+        self.max_Camber = self.max_Camber +  1*sigma*random.uniform(-1,1)
+        self.cost = self.cost +  10*sigma*random.uniform(-1,1)
