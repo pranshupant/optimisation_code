@@ -451,3 +451,20 @@ class airfoil:
     def mutate(self, sigma):
         self.max_Camber = self.max_Camber +  1*sigma*random.uniform(-1,1)
         self.cost = self.cost +  10*sigma*random.uniform(-1,1)
+
+    def mean_camber(self, g, s):
+        M = np.zeros(68)
+        M = (self.c_Upper+self.c_Lower)/2
+
+        C = 0
+        for i in range(68):
+            C += (M[i]*100)
+        self.max_Camber = C/68
+
+        plt.plot(self.plotX, self.plotY,'b',linewidth=2.0,label='B-spline curve')
+        plt.plot(self.c_X, M,'b',linewidth=1.0,color='red',label='Camber curve %.2f---%.2f' %(self.cost,self.max_Camber))
+        plt.legend(loc='best')
+        plt.axis([0, 1, -0.25, 0.5])
+        plt.axis('equal')
+        plt.savefig(camberDirectory%(g,s))
+        plt.close()
