@@ -6,8 +6,8 @@ exponent = 2
 sigma_initial = 1.0
 sigma_final = 0.001
 Cmin = 0
-Cmax = 3
-M = 0.5
+Cmax = 5
+M = 0.2
 
 camberDirectory = 'Camber/airfoil_%i-%i.png'
 plotsDirectory = 'Plots/airfoil_%i-%i.png'
