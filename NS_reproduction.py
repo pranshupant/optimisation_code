@@ -30,9 +30,9 @@ def Rank_Assign(Airfoil, Cost0, Cost1):
     	Airfoil[Rank_List[i]].rank = i
         #Sorted_Airfoil.append(Airfoil[Rank_List[i]])
 
-    #return Rank_List
+    return NDSa
 
-def reproduction(Airfoil, gen, sigma, x, s):  
+def reproduction(Airfoil, gen, sigma, x, s, r, l):  
                      
     costs = []
     ranks = []
@@ -45,9 +45,33 @@ def reproduction(Airfoil, gen, sigma, x, s):
     WorstRank = max(ranks)
 
     #WorstCost = min(costs)
-    
-    #ratio = (WorstRank - Airfoil[x].rank)/(WorstRank)
-    C = int(Cmin + (Cmax - Cmin))#*ratio
+    #j = 0
+    #while 1:
+    #    if r[j] > nPop:
+    #        break
+
+    #    if r[j] <= nPop:
+    #        j+=1
+    #    
+    #    elif j>l:
+    #        break
+
+    j = l/4
+
+    i = 0 
+
+    while 1:
+        if x < r[i]:
+            break            
+
+        if x >= r[i]:
+            i +=1
+
+        elif i>l:
+            break
+
+    ratio = ((j-i)/j)**2
+    C = int(Cmin + (Cmax - Cmin)*ratio)
     #print(Airfoil[x].rank)
     print(C)
 
@@ -66,7 +90,7 @@ def reproduction(Airfoil, gen, sigma, x, s):
             progeny[j].write()
             progeny[j].savefig()
             progeny[j].show(gen, s[0])
-            progeny[j].camber(gen, s[0])
+            
             #progeny[j].mutate(sigma)
                                  
             s[0] += 1
@@ -74,6 +98,8 @@ def reproduction(Airfoil, gen, sigma, x, s):
         for j in range(C):
 
             progeny[j].xFoil()
+            #progeny[j].camber(gen, s[0])
+            progeny[j].mean_camber(gen, s[0])
             print(progeny[j].cost)
             #progeny[j].cfd()
             Airfoil.append(progeny[j])

@@ -20,12 +20,14 @@ for i in range(Gen0):
     Airfoil[i].write()
     Airfoil[i].savefig()
     Airfoil[i].show(gen, i)
-    Airfoil[i].camber(gen, i)
-    
+        
 for i in range(Gen0):
     #Airfoil[i].savefig()
     Airfoil[i].xFoil()
     #Airfoil[i].random()
+
+    #Airfoil[i].camber(gen, i)
+    Airfoil[i].mean_camber(gen, i)
     
     #Airfoil[i].cfd()
     print(Airfoil[i].cost)
@@ -55,8 +57,15 @@ if __name__ == "__main__":
         #plt.close() 
 
         #nsga_Airfoil = copy.deepcopy(Airfoil)
-        
-        Rank_Assign(Airfoil, Cost0, Cost1)
+        r = []
+        NDSa = []
+        total = 0
+        NDSa = Rank_Assign(Airfoil, Cost0, Cost1)
+        l = len(NDSa)
+        for i in range(len(NDSa)):
+            count = len(NDSa[i])
+            total += count
+            r.append(total)
         
         sigma = (((maxIt - float(gen-1))/maxIt)**exponent)*(sigma_initial - sigma_final) + sigma_final
 
@@ -105,12 +114,14 @@ if __name__ == "__main__":
             Airfoil[k].copy(gen, s[0])
             Airfoil[k].copy_Results(gen, s[0])
             Airfoil[k].show(gen, s[0])
-            Airfoil[k].camber(gen, s[0])
+            #Airfoil[k].camber(gen, s[0])
+            Airfoil[k].mean_camber(gen, s[0])
+
             s[0] += 1 
 
                 
         for x in range(len(Airfoil)):
-            reproduction(Airfoil, gen, sigma, x, s)    
+            reproduction(Airfoil, gen, sigma, x, s, r, l)    
             #Airfoil[x].mutate(sigma)
 
         #Airfoil.sort(key = lambda x: x.cost, reverse = True)
