@@ -25,8 +25,8 @@ for i in range(Gen0):
 
 for i in range(Gen0):
     #Airfoil[i].savefig()
-    Airfoil[i].xFoil()
-    #Airfoil[i].cfd()
+    #Airfoil[i].xFoil()
+    Airfoil[i].cfd()
     print(Airfoil[i].cost)
 
     gen = 1
