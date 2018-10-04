@@ -252,16 +252,20 @@ class airfoil:
             for line in f:
                  line = f.read()
 
-            p = re.findall(r'2000\s+([-.A-Za-z0-9]+)\s+([-.A-Za-z0-9]+)', line)
+            #p = re.findall(r'2000\s+([-.A-Za-z0-9]+)\s+([-.A-Za-z0-9]+)', line)
+            p = re.findall(r'2000\s+(-?\d\.\d{6})e([-+\d]{3})\s+(-?\d\.\d{6})e([-+\d]{3})\s+(-?\d\.\d{6})e([-+\d]{3})', line)
 
             try:
                 
-                r = float(p[0][0])/float(p[0][1])
+                r = float(p[0][4])*(10.0**int(p[0][5]))/(float(p[0][2])*(10.0**int(p[0][3])))
                 self.cost = r
 
             except IndexError:
 
-                self.cost = -100
+                self.cost = -11
+
+            except ValueError:
+                self.cost = -9
 
         else:
 
