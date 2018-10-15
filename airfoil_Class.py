@@ -227,15 +227,15 @@ class airfoil:
             self.cost = r 
 
 
-        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code')
+        os.chdir('../../../../optimisation_code')
         
 
     def cfd(self):  #Extract result from post processing
 
-        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_CFD/Generation_%i/Specie_%i'%(self.__generation,self.__specie))
+        os.chdir('Results_CFD/Generation_%i/Specie_%i'%(self.__generation,self.__specie))
         #os.mkdir('CFD')
 
-        copytree('/home/pranshu/Desktop/openFoam/IWO_CFD_orig', 'CFD')
+        copytree('../../../IWO_CFD_orig', 'CFD')
                
         os.chdir('CFD')
 
@@ -271,13 +271,13 @@ class airfoil:
 
             self.cost = -10
 
-        os.chdir('/home/pranshu/Documents/Visual_Studio_Code/optimisation_code')
+        os.chdir('../../../../../optimisation_code')
 
 
     def copy(self, g, s):
         
         if(not os.path.isdir("Results_XFoil/Generation_%i/Specie_%i" %(g,s))):
-            os.makedirs("/home/pranshu/Documents/Visual_Studio_Code/optimisation_code/Results_XFoil/Generation_%i/Specie_%i" %(g,s))
+            os.makedirs("Results_XFoil/Generation_%i/Specie_%i" %(g,s))
             
         f = open("Results_XFoil/Generation_%i/Specie_%i/plot_Airfoil_%i-%i" %(g,s,g,s),"w+")
 
@@ -414,7 +414,7 @@ class airfoil:
 
         self.__uPoint[1][1] = self.__uPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.__uPoint[1][1] = max(self.__uPoint[1][1], -0.1)
-        self.__uPoint[1][1] = min(self.__uPoint[1][1], -0.05)
+        self.__uPoint[1][1] = min(self.__uPoint[1][1], -0.25)
 
         self.__lPoint[1][1] = self.__lPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.__lPoint[1][1] = min(self.__lPoint[1][1], 0.15)
@@ -431,7 +431,7 @@ class airfoil:
 
             self.__lPoint[i][0] = min(self.__lPoint[i][0], UBX)
             self.__lPoint[i][0] = max(self.__lPoint[i][0], self.__lPoint[i-1][0]+0.1)
-            self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
+            self.__lPoint[i][0] = min(self.__lPoint[i][0], UBX)
 
         for i in range(2,4):
             self.__uPoint[i][1] = self.__uPoint[i][1] + M*sigma*random.uniform(-1,1)
