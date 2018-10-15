@@ -334,13 +334,25 @@ class airfoil:
             copyfile('Results_XFoil/Generation_%i/Specie_%i/plot.ps'%(self.__generation, self.__specie), 'Results_XFoil/Generation_%i/Specie_%i/plot.ps'%(g, s))
             
         except FileNotFoundError:
-            print('File to be copied is missing')
+            print('XFoil_plot---File to be copied is missing')
         
         try:
             copyfile('Results_XFoil/Generation_%i/Specie_%i/solution.txt'%(self.__generation, self.__specie), 'Results_XFoil/Generation_%i/Specie_%i/solution_copy.txt'%(g, s))
 
         except FileNotFoundError:
-            print('File to be copied is missing')
+            print('XFoil_solution---File to be copied is missing')
+
+        try:
+            copytree('Results_CFD/Generation_%i/Specie_%i/CFD'%(self.__generation, self.__specie), 'Results_CFD/Generation_%i/Specie_%i/CFD'%(g, s) )
+
+        except FileNotFoundError:
+            print('CFD Folder missing...')
+
+        try:
+            copyfile('error/%i--%i.svg'%(self.__generation, self.__specie), 'error/%i--%i.svg'%(g, s))
+            
+        except FileNotFoundError:
+            print('Error_plot---File to be copied is missing')
 
 
 
@@ -471,4 +483,62 @@ class airfoil:
         plt.axis([0, 1, -0.25, 0.5])
         plt.axis('equal')
         plt.savefig(camberDirectory%(g,s))
+        plt.close()
+
+    def error(self, og_airfoil):
+
+        #read the og_airfoil plot
+        loc = 'coord/' + og_airfoil
+        og = np.loadtxt(loc,skiprows = 1)
+        #print(og)
+        x = np.array(self.plotX)
+        y = np.array(self.plotY)
+
+        #print(len(og))
+        #print(og[:,1])
+
+        s = 0
+
+        for i in range(len(x)):
+
+            '''if x[i] == og[(i if (i<len(og)) else 80)]:
+                diff = y[i] - og[i][1]
+                print(diff)'''
+            
+            if x[i] <= og[i if (i<len(og)) else len(og)-1][0]:
+                j = i
+                while x[j] < og[i if i<len(og) else len(og)-1][0]:
+                    if(i < (len(og)/2)):
+                        j-=1 #if (i<len(x)/2) else j+=1
+                    else:
+                        j+=1
+                
+                diff = y[j] - og[i if (i<len(og)) else len(og)-1][1]
+                #print(diff)
+
+            elif x[i] > og[i if (i<len(og)) else len(og)-1][0]:
+                j = i
+                while x[j] > og[i if (i<len(og)) else len(og)-1][0]:
+                    if(i < (len(og)/2)):
+                        j+=1 #if i<(len(x)/2) else j-=1
+                    else:
+                        j-=1
+                
+                diff = y[j] - og[i if (i<len(og)) else len(og)-1][1]
+                #print(diff)
+
+            s += diff**2
+        #print(s)
+        self.cost = 1.000/s
+
+        plt.plot(x, y,'b',linewidth=1.0,label='Estimating A/F')
+        plt.plot(self.__uPoint[:,0], self.__uPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
+       
+        plt.plot(self.__lPoint[:,0],self.__lPoint[:,1],'k--',label='Control polygon',marker='o',markerfacecolor='green')
+        plt.plot(og[:,0], og[:,1],'b',linewidth=1.0,color='red',label='Original A/F')
+        plt.legend(loc='best')
+        plt.axis([0, 1, -0.25, 0.5])
+        plt.axis('equal')
+        #plt.show()
+        plt.savefig('error/%i--%i.svg'%(self.__generation, self.__specie))
         plt.close()
