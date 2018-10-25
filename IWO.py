@@ -29,7 +29,7 @@ for i in range(Gen0):
     Airfoil[i].cfd()
     print(Airfoil[i].cost)
 
-    gen = 1
+gen = 1
 
 if __name__ == "__main__":
 
@@ -58,7 +58,7 @@ if __name__ == "__main__":
             Airfoil[k].camber(gen, s[0])
             s[0] += 1 
 
-                
+
         for x in range(len(Airfoil)):
             reproduction(Airfoil, gen, sigma, x, s)    
 
