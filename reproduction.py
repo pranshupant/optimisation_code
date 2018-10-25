@@ -43,6 +43,6 @@ def reproduction(Airfoil, gen, sigma, x, s):
 
             #progeny[j].xFoil()
             #progeny[j].cfd()
-            progeny[j].error('e423.dat')
+            progeny[j].error('s1223.dat')
             print(progeny[j].cost)
             Airfoil.append(progeny[j])

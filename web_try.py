@@ -34,6 +34,8 @@ def save(i):
     coord_Data = get_Page(airfoils[i])
     urllib.request.urlretrieve(coord_Data[1], airfoils[i])
 
-y = Pool(12)
+'''y = Pool(12)
 
-yResult = y.map(save, range(len(airfoils)))
+yResult = y.map(save, range(len(airfoils)))'''
+
+np.savetxt('Airfoil_list.txt', airfoils, fmt='%s')
