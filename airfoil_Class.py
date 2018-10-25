@@ -21,8 +21,8 @@ class airfoil:
         
         self.__generation = gen
         self.__specie = spec
-        self.__uPoint = np.zeros((5,2))
-        self.__lPoint = np.zeros((5,2))
+        self.__uPoint = np.zeros((6,2))
+        self.__lPoint = np.zeros((6,2))
         self.plotX = []
         self.plotY = []
         self.c_Lower = np.zeros(69)
@@ -45,21 +45,21 @@ class airfoil:
 
         
         self.__uPoint[1] = [0, random.uniform(-0.1, -0.025)] # Lower Array
-        self.__uPoint[4] = [1, 0]
+        self.__uPoint[5] = [1, 0]
 
-        for i in range(2, 4):
-            self.__uPoint[i][0] = random.uniform((LBX if (i==2) else self.__uPoint[2][0]+0.1),
-                                         (0.4 if (i==2) else UBX))
+        for i in range(2, 5):
+            self.__uPoint[i][0] = random.uniform((LBX if (i==2) else self.__uPoint[i-1][0]+0.05),
+                                         (0.2*i if not (i==4) else UBX))
             self.__uPoint[i][1] = random.uniform(LBY2, UBY2)
 
         self.__lPoint[1] = [0, random.uniform(0.05, 0.15)] # Upper Array
-        self.__lPoint[4] = [1, 0]
+        self.__lPoint[5] = [1, 0]
 
-        for i in range(2, 4):
-            self.__lPoint[i][0] = random.uniform((LBX if (i==2) else self.__lPoint[2][0]+0.1),
-                                         (0.4 if (i==2) else UBX))
+        for i in range(2, 5):
+            self.__lPoint[i][0] = random.uniform((LBX if (i==2) else self.__lPoint[i-1][0]+0.05),
+                                         (0.2*i if not (i==4) else UBX))
             self.__lPoint[i][1] = random.uniform(LBY if (LBY>self.__uPoint[i][1]) 
-                                             else self.__uPoint[i][1]+0.1, UBY)
+                                             else self.__uPoint[i][1]+0.03, UBY)
 
         #print(self.__uPoint)
         #print(self.__lPoint)
@@ -82,7 +82,7 @@ class airfoil:
 
         tck=[t,[x,y],3]
         lck=[t,[x1,y1],3]
-        u3=np.linspace(0,1,(max(l*2,70)),endpoint=True)
+        u3=np.linspace(0,1,(max(l*2,100)),endpoint=True)
         out = interpolate.splev(u3,tck) 
         out1 = interpolate.splev(u3,lck) 
         
@@ -414,35 +414,46 @@ class airfoil:
 
         self.__uPoint[1][1] = self.__uPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.__uPoint[1][1] = max(self.__uPoint[1][1], -0.1)
-        self.__uPoint[1][1] = min(self.__uPoint[1][1], -0.25)
+        self.__uPoint[1][1] = min(self.__uPoint[1][1], -0.025)
 
         self.__lPoint[1][1] = self.__lPoint[1][1] + M*sigma*random.uniform(-1,1)   
         self.__lPoint[1][1] = min(self.__lPoint[1][1], 0.15)
         self.__lPoint[1][1] = max(self.__lPoint[1][1], 0.05)
 
 
-        for i in range(2,4):
+        for i in range(2,5):
             self.__uPoint[i][0] = self.__uPoint[i][0] + M*sigma*random.uniform(-1,1)
-            self.__lPoint[i][0] = self.__lPoint[i][0] + M*sigma*random.uniform(-1,1)    
+                
       
             self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
-            self.__uPoint[i][0] = max(self.__uPoint[i][0], self.__uPoint[i-1][0]+0.1)
+            self.__uPoint[i][0] = max(self.__uPoint[i][0], self.__uPoint[i-1][0]+0.05)
             self.__uPoint[i][0] = min(self.__uPoint[i][0], UBX)
 
+            
+
+        for i in range(2,5):
+            self.__lPoint[i][0] = self.__lPoint[i][0] + M*sigma*random.uniform(-1,1)
+
             self.__lPoint[i][0] = min(self.__lPoint[i][0], UBX)
-            self.__lPoint[i][0] = max(self.__lPoint[i][0], self.__lPoint[i-1][0]+0.1)
+            self.__lPoint[i][0] = max(self.__lPoint[i][0], self.__lPoint[i-1][0]+0.05)
             self.__lPoint[i][0] = min(self.__lPoint[i][0], UBX)
 
-        for i in range(2,4):
+
+        for i in range(2,5):
             self.__uPoint[i][1] = self.__uPoint[i][1] + M*sigma*random.uniform(-1,1)
-            self.__lPoint[i][1] = self.__lPoint[i][1] + M*sigma*random.uniform(-1,1)    
+                
 
             self.__uPoint[i][1] = min(self.__uPoint[i][1], UBY2)
             self.__uPoint[i][1] = max(self.__uPoint[i][1], LBY2)
 
+            
+
+        for i in range(2, 5):
+            self.__lPoint[i][1] = self.__lPoint[i][1] + M*sigma*random.uniform(-1,1)
+
             self.__lPoint[i][1] = min(self.__lPoint[i][1], UBY)
-            self.__lPoint[i][1] = max(self.__lPoint[i][1], self.__uPoint[i][1]+0.1)
-            self.__lPoint[i][1] = max(self.__lPoint[i][1], self.__uPoint[i-1][1]+0.1)
+            self.__lPoint[i][1] = max(self.__lPoint[i][1], self.__uPoint[i][1]+0.05)
+            self.__lPoint[i][1] = max(self.__lPoint[i][1], self.__uPoint[i-1][1]+0.05)
 
     def camber(self, g, s):
         M = np.zeros(69)
@@ -488,43 +499,39 @@ class airfoil:
     def error(self, og_airfoil):
 
         #read the og_airfoil plot
-        loc = 'coord/' + og_airfoil
-        og = np.loadtxt(loc,skiprows = 1)
+        loc = '../../optimisation_code/coord/' + og_airfoil + '.dat'
+        og = np.loadtxt(loc,skiprows = 2)
         #print(og)
         x = np.array(self.plotX)
         y = np.array(self.plotY)
 
-        #print(len(og))
+        print(len(og))
         #print(og[:,1])
 
         s = 0
 
-        for i in range(len(x)):
-
-            '''if x[i] == og[(i if (i<len(og)) else 80)]:
-                diff = y[i] - og[i][1]
-                print(diff)'''
-            
-            if x[i] <= og[i if (i<len(og)) else len(og)-1][0]:
+        for i in range(len(og)):
+                       
+            if x[i] <= og[i if (i<len(og)) else (len(og)-1)][0]:
                 j = i
-                while x[j] < og[i if i<len(og) else len(og)-1][0]:
+                while x[j] < og[i if i<len(og) else (len(og)-1)][0]:
                     if(i < (len(og)/2)):
                         j-=1 #if (i<len(x)/2) else j+=1
                     else:
                         j+=1
                 
-                diff = y[j] - og[i if (i<len(og)) else len(og)-1][1]
+                diff = y[j] - og[i if (i<len(og)) else (len(og)-1)][1]
                 #print(diff)
 
-            elif x[i] > og[i if (i<len(og)) else len(og)-1][0]:
+            elif x[i] > og[i if (i<len(og)) else (len(og)-1)][0]:
                 j = i
-                while x[j] > og[i if (i<len(og)) else len(og)-1][0]:
+                while x[j] > og[i if (i<len(og)) else (len(og)-1)][0]:
                     if(i < (len(og)/2)):
                         j+=1 #if i<(len(x)/2) else j-=1
                     else:
                         j-=1
                 
-                diff = y[j] - og[i if (i<len(og)) else len(og)-1][1]
+                diff = y[j] - og[i if (i<len(og)) else (len(og)-1)][1]
                 #print(diff)
 
             s += diff**2
